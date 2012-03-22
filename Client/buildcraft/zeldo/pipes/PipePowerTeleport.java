@@ -211,17 +211,21 @@ public class PipePowerTeleport extends Pipe implements IPipeTransportPowerHook {
 
 		return result;
 	}
-	public boolean canReceivePower(Position p) {
-		TileEntity entity = worldObj.getBlockTileEntity((int) p.x, (int) p.y, (int) p.z);
-		if (entity instanceof TileGenericPipe || entity instanceof IPowerReceptor) {
-			// TODO Breaks on this check pipes or checkLegacy
-			//	if (Utils.checkPipesConnections(worldObj, (int) p.x, (int) p.y, (int) p.z, xCoord, yCoord, zCoord))
-			{
-				return true;
-			}
-		}
-		return false;
-	}
+	
+    public boolean canReceivePower(Position p) {
+        
+        TileEntity entity = worldObj.getBlockTileEntity((int) p.x, (int) p.y, (int) p.z);
+        if (!(entity instanceof IPowerReceptor))
+                return false;
+        if(!(entity instanceof TileGenericPipe))
+                return false;
+        if(! (((TileGenericPipe)entity).pipe.transport instanceof PipeTransportPower))
+                return false;
+       
+        return true;
+}
+
+
 	public void removeOldPipes()
 	{
 		LinkedList <PipePowerTeleport> toRemove = new LinkedList <PipePowerTeleport> ();
@@ -296,11 +300,15 @@ public class PipePowerTeleport extends Pipe implements IPipeTransportPowerHook {
 					//System.out.println(getPosition().toString() + " RequestEnergy: " + from.toString() + " - Val: " + is + " - Dest: " + destPos.toString());
 
 					TileEntity tile = worldObj.getBlockTileEntity((int)destPos.x, (int)destPos.y, (int)destPos.z);
-					if (tile instanceof TileGenericPipe) {
-						TileGenericPipe nearbyTile = (TileGenericPipe) tile;
-						PipeTransportPower nearbyTransport = (PipeTransportPower) nearbyTile.pipe.transport;
-						nearbyTransport.requestEnergy(newPos.reverse(), is);
-					}
+		            if (tile instanceof TileGenericPipe) {
+	                    TileGenericPipe nearbyTile = (TileGenericPipe) tile;
+	                    if(nearbyTile.pipe.transport instanceof PipeTransportPower) {
+	                            PipeTransportPower nearbyTransport = (PipeTransportPower) nearbyTile.pipe.transport;
+	                            nearbyTransport.requestEnergy(newPos.reverse(), is);
+	                    } else
+	                            continue;
+	            }
+
 				}
 			}
 		}
