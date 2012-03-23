@@ -1,10 +1,6 @@
 package net.minecraft.src.buildcraft.zeldo.ChunkLoader;
 
-import net.minecraft.src.BlockContainer;
-import net.minecraft.src.Material;
-import net.minecraft.src.TileEntity;
-import net.minecraft.src.World;
-import net.minecraft.src.buildcraft.zeldo.MutiPlayerProxy;
+import net.minecraft.src.*;
 
 
 // Referenced classes of package net.minecraft.src:
@@ -21,26 +17,18 @@ public class BlockChunkLoader extends BlockContainer
 	@Override
 	public void onBlockAdded(World world, int i, int j, int k)
 	{
-		MutiPlayerProxy.AddChunkToList(i, k);
+            System.out.println("Placing block.");
 	}
 
 	@Override
 	public void onBlockRemoval(World world, int i, int j, int k)
 	{
-		MutiPlayerProxy.DeleteChunkFromList(i, k);
 	}
 
 	@Override
 	public TileEntity getBlockEntity()
 	{
-		try
-		{
-			return new TileChunkLoader();
-		}
-		catch(Exception exception)
-		{
-			throw new RuntimeException(exception);
-		}
+            return new TileChunkLoader();
 	}
 
 }
