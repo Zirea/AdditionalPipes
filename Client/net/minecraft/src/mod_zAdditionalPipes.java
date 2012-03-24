@@ -25,8 +25,7 @@ public class mod_zAdditionalPipes extends BaseModMp {
     public static mod_zAdditionalPipes instance;
 
     /*
-     * ChuckLoader
-     * Handler
+     * ChuckLoader Handler
      */
     static class ChunkLoadingHandler implements IChunkLoadHandler {
 
@@ -34,6 +33,7 @@ public class mod_zAdditionalPipes extends BaseModMp {
         public void addActiveChunks(World world, Set<ChunkCoordIntPair> chunkList) {
 
             Iterator<TileChunkLoader> iterator = TileChunkLoader.chunkLoaderList.iterator();
+
             while (iterator.hasNext()) {
 
                 TileChunkLoader tile = iterator.next();
@@ -42,11 +42,11 @@ public class mod_zAdditionalPipes extends BaseModMp {
                 for (ChunkCoordIntPair chunkCoords : loadArea) {
 
                     if (!chunkList.contains(chunkCoords)) {
-                        //System.out.println("Adding chunk (" + chunkCoords + ") to chunkList.");
+                        System.out.println("Adding chunk (" + chunkCoords + ") to chunkList.");
                         chunkList.add(chunkCoords);
                     }
                     else {
-                        //System.out.println("Chunk (" + chunkCoords + ") already there.");
+                        System.out.println("Chunk (" + chunkCoords + ") already there.");
                     }
                 }
             }
@@ -56,15 +56,18 @@ public class mod_zAdditionalPipes extends BaseModMp {
         public boolean canUnloadChunk(Chunk chunk) {
 
             Iterator<TileChunkLoader> iterator = TileChunkLoader.chunkLoaderList.iterator();
+
             while (iterator.hasNext()) {
 
                 TileEntity tile = iterator.next();
+
                 if (chunk.worldObj.getChunkFromBlockCoords(tile.xCoord, tile.yCoord).equals(chunk)) {
-                    System.out.println("Keeping chunk.");
+                    System.out.println("Keeping chunk.(" + chunk.getChunkCoordIntPair() + ")");
                     return false;
                 }
             }
 
+            System.out.println("Letting chunk (" + chunk.getChunkCoordIntPair() + ") unload.");
             return true;
         }
     }
@@ -179,39 +182,38 @@ public class mod_zAdditionalPipes extends BaseModMp {
             toggleLasers();
         }
     }
-    
+
     public void toggleLasers() {
-        
+
         if (!lasers.isEmpty()) {
-            
+
             for (Box laser : lasers) {
                 laser.deleteLasers();
             }
-            
+
             lasers.clear();
         }
         else {
-            
-            System.out.println("Lasers on...");
+
             int playerY = (int) mc.thePlayer.posY;
-            
+
             //Loop through chunks to with chunkloader
             for (TileChunkLoader tile : TileChunkLoader.chunkLoaderList) {
-                    
+
                 List<ChunkCoordIntPair> chunkCoords = tile.getLoadArea();
-                
+
                 for (ChunkCoordIntPair coords : chunkCoords) {
-                    
+
                     int chunkX = coords.chunkXPos * 16;
                     int chunkZ = coords.chunkZPos * 16;
-                    
+
                     System.out.println("x: " + chunkX + " z: " + chunkZ);
-                    
+
                     Box outsideLaser = new Box();
                     outsideLaser.initialize(chunkX, playerY, chunkZ, chunkX + 16, playerY, chunkZ + 16);
                     outsideLaser.createLasers(mc.theWorld, LaserKind.Blue);
                     lasers.add(outsideLaser);
-                    
+
                     Box insideLaser = new Box();
                     insideLaser.initialize(chunkX + 7, playerY, chunkZ + 7, chunkX + 9, playerY, chunkZ + 9);
                     insideLaser.createLasers(mc.theWorld, LaserKind.Red);
@@ -219,7 +221,7 @@ public class mod_zAdditionalPipes extends BaseModMp {
                 }
             }
         }
-        
+
     }
 
     public mod_zAdditionalPipes() {
@@ -269,6 +271,7 @@ public class mod_zAdditionalPipes extends BaseModMp {
                 else {
                     System.out.println("MutiPlayer, Not Clearing");
                 }
+
                 isInGame = false;
             }
         }
@@ -276,6 +279,7 @@ public class mod_zAdditionalPipes extends BaseModMp {
             wasMutiPlayer = minecraft.theWorld.isRemote;
             isInGame = true;
         }
+
         return true;
     }
 
@@ -335,10 +339,11 @@ public class mod_zAdditionalPipes extends BaseModMp {
         ModLoader.addName(blockChunkLoader, "ChunkLoading Block");
         boolean Craftable = Boolean.parseBoolean(config.getOrCreateBooleanProperty("ChunkLoader.Enabled", Configuration.BLOCK_PROPERTY, true).value);
         config.save();
-        if (Craftable) // Replaced shapeless with  IronBox with lapis in middle
-        {
-            CraftingManager.getInstance().addRecipe(new ItemStack(blockChunkLoader, 4), new Object[]{"iii", "iLi", "iii", Character.valueOf('i'), Item.ingotIron, Character.valueOf('L'), new ItemStack(Item.dyePowder, 1, 4)});
+
+        if (Craftable) { // Replaced shapeless with  IronBox with lapis in middle
+            CraftingManager.getInstance().addRecipe(new ItemStack(blockChunkLoader, 4), new Object[] {"iii", "iLi", "iii", Character.valueOf('i'), Item.ingotIron, Character.valueOf('L'), new ItemStack(Item.dyePowder, 1, 4)});
         }
+
         //Finish ChunkLoader
 
         config.save();
@@ -347,21 +352,21 @@ public class mod_zAdditionalPipes extends BaseModMp {
             CraftingManager craftingmanager = CraftingManager.getInstance();
 
             //Mine
-            craftingmanager.addRecipe(new ItemStack(pipeItemTeleport, 1), new Object[]{"A", Character.valueOf('A'), pipeLiquidTeleport});
-            craftingmanager.addRecipe(new ItemStack(pipeItemTeleport, 1), new Object[]{"A", Character.valueOf('A'), pipePowerTeleport});
-            craftingmanager.addRecipe(new ItemStack(pipeRedStone, 1), new Object[]{"A", Character.valueOf('A'), pipeRedStoneLiquid});
+            craftingmanager.addRecipe(new ItemStack(pipeItemTeleport, 1), new Object[] {"A", Character.valueOf('A'), pipeLiquidTeleport});
+            craftingmanager.addRecipe(new ItemStack(pipeItemTeleport, 1), new Object[] {"A", Character.valueOf('A'), pipePowerTeleport});
+            craftingmanager.addRecipe(new ItemStack(pipeRedStone, 1), new Object[] {"A", Character.valueOf('A'), pipeRedStoneLiquid});
 
             //BC Liquid
-            craftingmanager.addRecipe(new ItemStack(BuildCraftTransport.pipeItemsCobblestone, 1), new Object[]{"A", Character.valueOf('A'), BuildCraftTransport.pipeLiquidsCobblestone});
-            craftingmanager.addRecipe(new ItemStack(BuildCraftTransport.pipeItemsGold, 1), new Object[]{"A", Character.valueOf('A'), BuildCraftTransport.pipeLiquidsGold});
-            craftingmanager.addRecipe(new ItemStack(BuildCraftTransport.pipeItemsIron, 1), new Object[]{"A", Character.valueOf('A'), BuildCraftTransport.pipeLiquidsIron});
-            craftingmanager.addRecipe(new ItemStack(BuildCraftTransport.pipeItemsStone, 1), new Object[]{"A", Character.valueOf('A'), BuildCraftTransport.pipeLiquidsStone});
-            craftingmanager.addRecipe(new ItemStack(BuildCraftTransport.pipeItemsWood, 1), new Object[]{"A", Character.valueOf('A'), BuildCraftTransport.pipeLiquidsWood});
+            craftingmanager.addRecipe(new ItemStack(BuildCraftTransport.pipeItemsCobblestone, 1), new Object[] {"A", Character.valueOf('A'), BuildCraftTransport.pipeLiquidsCobblestone});
+            craftingmanager.addRecipe(new ItemStack(BuildCraftTransport.pipeItemsGold, 1), new Object[] {"A", Character.valueOf('A'), BuildCraftTransport.pipeLiquidsGold});
+            craftingmanager.addRecipe(new ItemStack(BuildCraftTransport.pipeItemsIron, 1), new Object[] {"A", Character.valueOf('A'), BuildCraftTransport.pipeLiquidsIron});
+            craftingmanager.addRecipe(new ItemStack(BuildCraftTransport.pipeItemsStone, 1), new Object[] {"A", Character.valueOf('A'), BuildCraftTransport.pipeLiquidsStone});
+            craftingmanager.addRecipe(new ItemStack(BuildCraftTransport.pipeItemsWood, 1), new Object[] {"A", Character.valueOf('A'), BuildCraftTransport.pipeLiquidsWood});
 
             //BC Power
-            craftingmanager.addRecipe(new ItemStack(BuildCraftTransport.pipeItemsGold, 1), new Object[]{"A", Character.valueOf('A'), BuildCraftTransport.pipePowerGold});
-            craftingmanager.addRecipe(new ItemStack(BuildCraftTransport.pipeItemsStone, 1), new Object[]{"A", Character.valueOf('A'), BuildCraftTransport.pipePowerStone});
-            craftingmanager.addRecipe(new ItemStack(BuildCraftTransport.pipeItemsWood, 1), new Object[]{"A", Character.valueOf('A'), BuildCraftTransport.pipePowerWood});
+            craftingmanager.addRecipe(new ItemStack(BuildCraftTransport.pipeItemsGold, 1), new Object[] {"A", Character.valueOf('A'), BuildCraftTransport.pipePowerGold});
+            craftingmanager.addRecipe(new ItemStack(BuildCraftTransport.pipeItemsStone, 1), new Object[] {"A", Character.valueOf('A'), BuildCraftTransport.pipePowerStone});
+            craftingmanager.addRecipe(new ItemStack(BuildCraftTransport.pipeItemsWood, 1), new Object[] {"A", Character.valueOf('A'), BuildCraftTransport.pipePowerWood});
         }
 
         RegisterPipeIds();
@@ -425,20 +430,24 @@ public class mod_zAdditionalPipes extends BaseModMp {
     @Override
     public void handlePacket(Packet230ModLoader packet) {
         System.out.println("Packet: " + packet.packetType);
+
         if (packet.packetType == PACKET_SET_AW) {
             int x = packet.dataInt[0];
             int y = packet.dataInt[1];
             int z = packet.dataInt[2];
+
             if (getWorld().blockExists(x, y, z)) {
                 TileGenericPipe tile = (TileGenericPipe) getWorld().getBlockTileEntity(x, y, z);
                 boolean Exclude = intToBool(packet.dataInt[3]);
                 ((PipeLogicAdvancedWood) tile.pipe.logic).exclude = Exclude;
             }
         }
+
         if (packet.packetType == PACKET_SET_ITEM) {
             int x = packet.dataInt[0];
             int y = packet.dataInt[1];
             int z = packet.dataInt[2];
+
             if (getWorld().blockExists(x, y, z)) {
                 TileGenericPipe tile = (TileGenericPipe) getWorld().getBlockTileEntity(x, y, z);
                 int freq = packet.dataInt[3];
@@ -449,10 +458,12 @@ public class mod_zAdditionalPipes extends BaseModMp {
                 ((PipeItemTeleport) tile.pipe).Owner = own;
             }
         }
+
         if (packet.packetType == PACKET_SET_LIQUID) {
             int x = packet.dataInt[0];
             int y = packet.dataInt[1];
             int z = packet.dataInt[2];
+
             if (getWorld().blockExists(x, y, z)) {
                 TileGenericPipe tile = (TileGenericPipe) getWorld().getBlockTileEntity(x, y, z);
                 int freq = packet.dataInt[3];
@@ -463,10 +474,12 @@ public class mod_zAdditionalPipes extends BaseModMp {
                 ((PipeLiquidsTeleport) tile.pipe).Owner = own;
             }
         }
+
         if (packet.packetType == PACKET_SET_POWER) {
             int x = packet.dataInt[0];
             int y = packet.dataInt[1];
             int z = packet.dataInt[2];
+
             if (getWorld().blockExists(x, y, z)) {
                 TileGenericPipe tile = (TileGenericPipe) getWorld().getBlockTileEntity(x, y, z);
                 int freq = packet.dataInt[3];
@@ -477,36 +490,45 @@ public class mod_zAdditionalPipes extends BaseModMp {
                 ((PipePowerTeleport) tile.pipe).Owner = own;
             }
         }
+
         if (packet.packetType == PACKET_GUI_COUNT) {
             CurrentGUICount = packet.dataInt[0];
         }
+
         if (packet.packetType == PACKET_OPEN_GUI) {
             int x = packet.dataInt[0];
             int y = packet.dataInt[1];
             int z = packet.dataInt[2];
             TileGenericPipe tilePipe = (TileGenericPipe) getWorld().getBlockTileEntity(x, y, z);
+
             switch (packet.dataInt[3]) {
                 case 0:
                     mc.displayGuiScreen(new GuiItemTeleportPipe(tilePipe));
                     break;
+
                 case 1:
                     mc.displayGuiScreen(new GuiLiquidTeleportPipe(tilePipe));
                     break;
+
                 case 2:
                     mc.displayGuiScreen(new GuiPowerTeleportPipe(tilePipe));
                     break;
+
                 case 3:
                     mc.displayGuiScreen(new GuiDistributionPipe(tilePipe));
                     break;
             }
         }
+
         if (packet.packetType == PACKET_SET_DIST) {
             int x = packet.dataInt[0];
             int y = packet.dataInt[1];
             int z = packet.dataInt[2];
+
             if (getWorld().blockExists(x, y, z)) {
                 TileGenericPipe tile = (TileGenericPipe) getWorld().getBlockTileEntity(x, y, z);
                 PipeItemsDistributor a = (PipeItemsDistributor) tile.pipe;
+
                 for (int i = 0; i < a.distData.length; i++) {
                     a.distData[i] = packet.dataInt[3 + i];
                 }
@@ -522,18 +544,19 @@ public class mod_zAdditionalPipes extends BaseModMp {
         if (a) {
             return 1;
         }
+
         return 0;
     }
 
-    private static Item createPipe(int defaultID, Class<? extends Pipe> clas, String descr, Object r1, Object r2, Object r3, Object r4) {
+    private static Item createPipe(int defaultID, Class <? extends Pipe > clas, String descr, Object r1, Object r2, Object r3, Object r4) {
 
         String name = Character.toLowerCase(clas.getSimpleName().charAt(0))
-                + clas.getSimpleName().substring(1);
+                      + clas.getSimpleName().substring(1);
 
         Property prop = config.getOrCreateIntProperty(name + ".id",
-                Configuration.ITEM_PROPERTY, defaultID);
+                        Configuration.ITEM_PROPERTY, defaultID);
         Property propLoad = config.getOrCreateBooleanProperty(name + ".Enabled",
-                Configuration.ITEM_PROPERTY, true);
+                            Configuration.ITEM_PROPERTY, true);
         config.save();
         int id = Integer.parseInt(prop.value);
         Item res = BlockGenericPipe.registerPipe(id, clas);
@@ -545,26 +568,30 @@ public class mod_zAdditionalPipes extends BaseModMp {
         }
 
         CraftingManager craftingmanager = CraftingManager.getInstance();
+
         if (r1 != null && r2 != null && r3 != null && r4 != null) {
-            craftingmanager.addRecipe(new ItemStack(res, 8), new Object[]{
-                        " D ", "ABC", "   ",
-                        Character.valueOf('D'), r1,
-                        Character.valueOf('A'), r2,
-                        Character.valueOf('B'), r3,
-                        Character.valueOf('C'), r4});
+            craftingmanager.addRecipe(new ItemStack(res, 8), new Object[] {
+                                          " D ", "ABC", "   ",
+                                          Character.valueOf('D'), r1,
+                                          Character.valueOf('A'), r2,
+                                          Character.valueOf('B'), r3,
+                                          Character.valueOf('C'), r4
+                                      });
         }
         else if (r1 != null && r2 != null && r3 != null) {
-            craftingmanager.addRecipe(new ItemStack(res, 8), new Object[]{
-                        "   ", "ABC", "   ",
-                        Character.valueOf('A'), r1,
-                        Character.valueOf('B'), r2,
-                        Character.valueOf('C'), r3});
+            craftingmanager.addRecipe(new ItemStack(res, 8), new Object[] {
+                                          "   ", "ABC", "   ",
+                                          Character.valueOf('A'), r1,
+                                          Character.valueOf('B'), r2,
+                                          Character.valueOf('C'), r3
+                                      });
         }
         else if (r1 != null && r2 != null) {
-            craftingmanager.addRecipe(new ItemStack(res, 1), new Object[]{
-                        "A ", "B ",
-                        Character.valueOf('A'), r1,
-                        Character.valueOf('B'), r2});
+            craftingmanager.addRecipe(new ItemStack(res, 1), new Object[] {
+                                          "A ", "B ",
+                                          Character.valueOf('A'), r1,
+                                          Character.valueOf('B'), r2
+                                      });
         }
 
         return res;
@@ -603,6 +630,7 @@ public class mod_zAdditionalPipes extends BaseModMp {
         if (pipeIds.contains(ItemID)) {
             return true;
         }
+
         return false;
     }
 
