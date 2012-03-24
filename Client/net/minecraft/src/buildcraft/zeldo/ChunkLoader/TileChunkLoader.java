@@ -2,6 +2,7 @@ package net.minecraft.src.buildcraft.zeldo.ChunkLoader;
 
 import java.util.LinkedList;
 import java.util.List;
+import net.minecraft.src.Chunk;
 import net.minecraft.src.ChunkCoordIntPair;
 import net.minecraft.src.TileEntity;
 
@@ -27,10 +28,11 @@ public class TileChunkLoader extends TileEntity {
         
         List<ChunkCoordIntPair> loadArea = new LinkedList<>();
         
+        Chunk centerChunk = worldObj.getChunkFromBlockCoords(xCoord, zCoord);
         for (int x = -1; x < 2; x++) {
             for (int z = -1; z < 2; z++) {
                 
-                ChunkCoordIntPair chunkCoords = new ChunkCoordIntPair(xCoord + x, zCoord + z);
+                ChunkCoordIntPair chunkCoords = new ChunkCoordIntPair(centerChunk.xPosition + x, centerChunk.zPosition + z);
                 loadArea.add(chunkCoords);
             }
         }

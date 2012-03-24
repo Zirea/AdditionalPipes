@@ -1,10 +1,9 @@
 package net.minecraft.src.buildcraft.zeldo.ChunkLoader;
 
-import net.minecraft.src.*;
-
-
-// Referenced classes of package net.minecraft.src:
-//            Block, Material
+import net.minecraft.src.BlockContainer;
+import net.minecraft.src.Material;
+import net.minecraft.src.TileEntity;
+import net.minecraft.src.World;
 
 public class BlockChunkLoader extends BlockContainer
 {
