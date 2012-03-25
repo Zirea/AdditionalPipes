@@ -42,7 +42,6 @@ public class mod_zAdditionalPipes extends BaseModMp {
                 for (ChunkCoordIntPair chunkCoords : loadArea) {
 
                     if (!chunkList.contains(chunkCoords)) {
-                        System.out.println("Adding chunk (" + chunkCoords + ") to chunkList.");
                         chunkList.add(chunkCoords);
                     }
                 }
