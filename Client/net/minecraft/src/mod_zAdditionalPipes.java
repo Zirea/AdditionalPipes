@@ -45,9 +45,6 @@ public class mod_zAdditionalPipes extends BaseModMp {
                         System.out.println("Adding chunk (" + chunkCoords + ") to chunkList.");
                         chunkList.add(chunkCoords);
                     }
-                    else {
-                        System.out.println("Chunk (" + chunkCoords + ") already there.");
-                    }
                 }
             }
         }
@@ -62,12 +59,9 @@ public class mod_zAdditionalPipes extends BaseModMp {
                 TileEntity tile = iterator.next();
 
                 if (chunk.worldObj.getChunkFromBlockCoords(tile.xCoord, tile.yCoord).equals(chunk)) {
-                    System.out.println("Keeping chunk.(" + chunk.getChunkCoordIntPair() + ")");
                     return false;
                 }
             }
-
-            System.out.println("Letting chunk (" + chunk.getChunkCoordIntPair() + ") unload.");
             return true;
         }
     }
