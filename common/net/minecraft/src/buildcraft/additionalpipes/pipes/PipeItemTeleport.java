@@ -21,9 +21,9 @@ import net.minecraft.src.buildcraft.additionalpipes.network.NetworkID;
 import net.minecraft.src.buildcraft.api.*;
 import net.minecraft.src.buildcraft.core.StackUtil;
 import net.minecraft.src.buildcraft.core.Utils;
-import net.minecraft.src.buildcraft.core.network.PacketPayload;
+/*import net.minecraft.src.buildcraft.core.network.PacketPayload;
 import net.minecraft.src.buildcraft.core.network.PacketUpdate;
-import net.minecraft.src.buildcraft.core.network.TilePacketWrapper;
+import net.minecraft.src.buildcraft.core.network.TilePacketWrapper;*/
 import net.minecraft.src.buildcraft.transport.IPipeTransportItemsHook;
 import net.minecraft.src.buildcraft.transport.Pipe;
 import net.minecraft.src.buildcraft.transport.PipeTransportItems;

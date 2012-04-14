@@ -7,9 +7,9 @@ import net.minecraft.src.mod_AdditionalPipes;
 import net.minecraft.src.buildcraft.transport.TileGenericPipe;
 import net.minecraft.src.buildcraft.additionalpipes.logic.PipeLogicDistributor;
 import net.minecraft.src.buildcraft.additionalpipes.network.NetworkID;
-import net.minecraft.src.buildcraft.additionalpipes.network.PacketAdditionalPipes;
+//import net.minecraft.src.buildcraft.additionalpipes.network.PacketAdditionalPipes;
 import net.minecraft.src.buildcraft.additionalpipes.pipes.PipeItemsDistributor;
-import net.minecraft.src.buildcraft.core.network.PacketPayload;
+//import net.minecraft.src.buildcraft.core.network.PacketPayload;
 
 import org.lwjgl.opengl.GL11;
 
@@ -154,7 +154,7 @@ public class GuiDistributionPipe extends GuiContainer {
                 pipeLogic.distData[i] = 1;
             }
         
-        if (mc.theWorld.isRemote) {
+        /*if (mc.theWorld.isRemote) {
         	
         	PacketPayload payload = pipe.getNetworkPacket();
 
@@ -164,7 +164,7 @@ public class GuiDistributionPipe extends GuiContainer {
     		packet.posZ = pipe.zCoord;      
       
             ModLoader.getMinecraftInstance().getSendQueue().addToSendQueue(packet.getPacket());
-        }
+        }*/
 
     }
 

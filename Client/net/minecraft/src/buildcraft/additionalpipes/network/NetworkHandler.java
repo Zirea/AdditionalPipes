@@ -1,4 +1,4 @@
-package net.minecraft.src.buildcraft.additionalpipes.network;
+/*package net.minecraft.src.buildcraft.additionalpipes.network;
 
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
@@ -67,4 +67,4 @@ public class NetworkHandler implements IConnectionHandler, IPacketHandler {
         tile.pipe.handlePacket(packet);
     }
 
-}
+}*/

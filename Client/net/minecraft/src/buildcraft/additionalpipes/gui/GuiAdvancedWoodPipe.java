@@ -16,9 +16,9 @@ import net.minecraft.src.mod_AdditionalPipes;
 import net.minecraft.src.buildcraft.transport.TileGenericPipe;
 import net.minecraft.src.buildcraft.additionalpipes.logic.PipeLogicAdvancedWood;
 import net.minecraft.src.buildcraft.additionalpipes.network.NetworkID;
-import net.minecraft.src.buildcraft.additionalpipes.network.PacketAdditionalPipes;
+//import net.minecraft.src.buildcraft.additionalpipes.network.PacketAdditionalPipes;
 import net.minecraft.src.buildcraft.additionalpipes.pipes.PipeItemsAdvancedWood;
-import net.minecraft.src.buildcraft.core.network.PacketPayload;
+//import net.minecraft.src.buildcraft.core.network.PacketPayload;
 
 import org.lwjgl.opengl.GL11;
 
@@ -66,7 +66,7 @@ public class GuiAdvancedWoodPipe extends GuiContainer {
             ((PipeLogicAdvancedWood)container.pipe.logic).exclude = !((PipeLogicAdvancedWood)container.pipe.logic).exclude;
         }
         
-        if (mc.theWorld.isRemote) {
+        /*if (mc.theWorld.isRemote) {
         	
         	PacketPayload payload = container.pipe.getNetworkPacket();
 
@@ -76,7 +76,7 @@ public class GuiAdvancedWoodPipe extends GuiContainer {
     		packet.posZ = container.pipe.zCoord;      
       
             ModLoader.getMinecraftInstance().getSendQueue().addToSendQueue(packet.getPacket());
-        }
+        }*/
     }
 
     @Override

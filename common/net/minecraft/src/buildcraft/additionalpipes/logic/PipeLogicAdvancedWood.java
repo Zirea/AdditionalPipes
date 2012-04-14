@@ -63,8 +63,7 @@ public class PipeLogicAdvancedWood extends PipeLogic {
     public boolean isInput(TileEntity tile) {
         return !(tile instanceof TileGenericPipe)
                && (tile instanceof IInventory || tile instanceof ILiquidContainer)
-               &&  Utils.checkPipesConnections(worldObj, xCoord, yCoord,
-                                               zCoord, tile.xCoord, tile.yCoord, tile.zCoord);
+               &&  Utils.checkPipesConnections(worldObj, container, tile.xCoord, tile.yCoord, tile.zCoord);
     }
 
 

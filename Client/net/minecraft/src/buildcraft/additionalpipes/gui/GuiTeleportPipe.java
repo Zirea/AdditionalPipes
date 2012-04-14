@@ -10,9 +10,9 @@ import net.minecraft.src.mod_AdditionalPipes;
 import net.minecraft.src.buildcraft.additionalpipes.MutiPlayerProxy;
 import net.minecraft.src.buildcraft.additionalpipes.logic.PipeLogicTeleport;
 import net.minecraft.src.buildcraft.additionalpipes.network.NetworkID;
-import net.minecraft.src.buildcraft.additionalpipes.network.PacketAdditionalPipes;
+//import net.minecraft.src.buildcraft.additionalpipes.network.PacketAdditionalPipes;
 import net.minecraft.src.buildcraft.additionalpipes.pipes.PipeTeleport;
-import net.minecraft.src.buildcraft.core.network.PacketPayload;
+//import net.minecraft.src.buildcraft.core.network.PacketPayload;
 import net.minecraft.src.buildcraft.transport.Pipe;
 import net.minecraft.src.buildcraft.transport.TileGenericPipe;
 
@@ -91,7 +91,7 @@ public class GuiTeleportPipe extends GuiContainer {
         	pipe.logic.freq = 0;
         }
         
-        if (mc.theWorld.isRemote) {
+       /*if (mc.theWorld.isRemote) {
         	
         	PacketPayload payload = pipe.getNetworkPacket();
 
@@ -101,7 +101,7 @@ public class GuiTeleportPipe extends GuiContainer {
     		packet.posZ = pipe.zCoord;      
       
             ModLoader.getMinecraftInstance().getSendQueue().addToSendQueue(packet.getPacket());
-        }
+        }*/
     }
 
     protected void drawGuiContainerBackgroundLayer(float f, int x, int y) {

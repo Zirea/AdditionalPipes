@@ -1,4 +1,4 @@
-package net.minecraft.src.buildcraft.additionalpipes.network;
+/*package net.minecraft.src.buildcraft.additionalpipes.network;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
@@ -21,4 +21,4 @@ public class PacketAdditionalPipes extends PacketUpdate {
     	super(packetId, payload);
     	this.channel = NetworkHandler.CHANNEL;
     }
-}
+}*/
