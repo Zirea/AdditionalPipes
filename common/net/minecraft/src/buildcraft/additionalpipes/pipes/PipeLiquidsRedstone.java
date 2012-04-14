@@ -128,8 +128,7 @@ public class PipeLiquidsRedstone extends Pipe implements IPipeProvideRedstonePow
         TileEntity entity = worldObj.getBlockTileEntity((int) p.x, (int) p.y,
                             (int) p.z);
 
-        if (!Utils.checkPipesConnections(worldObj, (int) p.x, (int) p.y,
-                                         (int) p.z, xCoord, yCoord, zCoord)) {
+        if (!Utils.checkPipesConnections(worldObj, entity, xCoord, yCoord, zCoord)) {
             return false;
         }
 
