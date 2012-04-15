@@ -106,8 +106,8 @@ public class PipeItemTeleport extends PipeTeleport implements IPipeTransportItem
                 Position newPos = new Position(pos1);
                 newPos.orientation = Orientations.values()[o];
                 newPos.moveForwards(1.0);
-
-                if (((PipeTransportItems)transport).canReceivePipeObjects(newPos.orientation, item)) {
+                
+                if (isValidTarget(newPos.orientation)) {
                     temp.add(newPos.orientation);
                 }
             }
@@ -122,7 +122,7 @@ public class PipeItemTeleport extends PipeTeleport implements IPipeTransportItem
         Orientations newPos = temp.get(worldObj.rand.nextInt(temp.size()));
         ////System.out.println(newPos.toString());
         Position destPos = new Position(TempTeleport.get(i).xCoord, TempTeleport.get(i).yCoord, TempTeleport.get(i).zCoord, newPos);
-        destPos.moveForwards(1.0);
+        //destPos.moveForwards(1.0);
 
         TileEntity tile = worldObj.getBlockTileEntity((int)destPos.x, (int)destPos.y, (int)destPos.z);
 
@@ -164,6 +164,23 @@ public class PipeItemTeleport extends PipeTeleport implements IPipeTransportItem
         result.add(newPos);
 
         return result;
+    }
+    
+    public boolean isValidTarget(Orientations o) {
+    	
+    	TileEntity entity = container.getTile(o);
+    	
+    	if (entity instanceof IPipeEntry) {
+    		
+			return true;
+		}
+    	else if (entity instanceof TileGenericPipe) {
+    		
+			TileGenericPipe pipe = (TileGenericPipe) entity;
+			return pipe.pipe.transport instanceof PipeTransportItems;
+		}
+    	
+    	return false;
     }
     
     public Position getNewItemPos(Position Old, Orientations newPos, float f) {
