@@ -107,7 +107,7 @@ public class PipeItemTeleport extends PipeTeleport implements IPipeTransportItem
                 newPos.orientation = Orientations.values()[o];
                 newPos.moveForwards(1.0);
 
-                if (((PipeTransportItems)transport).canReceivePipeObjects(newPos, item)) {
+                if (((PipeTransportItems)transport).canReceivePipeObjects(newPos.orientation, item)) {
                     temp.add(newPos.orientation);
                 }
             }
