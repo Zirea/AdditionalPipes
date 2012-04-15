@@ -83,22 +83,35 @@ public class PipeItemTeleport extends PipeTeleport implements IPipeTransportItem
 
     @Override
     public LinkedList<Orientations> filterPossibleMovements(LinkedList<Orientations> possibleOrientations, Position pos, EntityPassiveItem item) {
-        
-    	List<PipeTeleport> TempTeleport = getConnectedPipes(false);
+
+    	System.out.println(possibleOrientations);
+    	
+    	List<PipeTeleport> connectedPipes = getConnectedPipes(false);
         LinkedList<Orientations> result = new LinkedList<Orientations>();
 
-        ////System.out.print("Pos: " + pos.toString() + "\n");
-        if (TempTeleport.size() <= 0) {
+        //If no connected pipes, bounce
+        if (connectedPipes.size() <= 0) {
             result.add(pos.orientation.reverse());
             return result;
         }
 
-        Random pipeRand = new Random();
-        int i = pipeRand.nextInt(TempTeleport.size());
+        Random rand = new Random();
+        PipeTeleport destPipe = connectedPipes.get(rand.nextInt(connectedPipes.size()));
+        
+        if (!Utils.addToRandomPipeEntry(destPipe.container, Orientations.Unknown, item.item)) {
+        	result.add(pos.orientation.reverse());
+            return result;
+        }
+        
+        return new LinkedList<Orientations>();
+        
+        
+        /*
+        int i = pipeRand.nextInt(connectedPipes.size());
 
         LinkedList<Orientations> temp = new LinkedList<Orientations>();
         
-        Position pos1 = TempTeleport.get(i).getPosition();
+        Position pos1 = connectedPipes.get(i).getPosition();
         
         for (int o = 0; o < 6; ++o) {
             if (Orientations.values()[o] != pos1.orientation.reverse()
@@ -121,7 +134,7 @@ public class PipeItemTeleport extends PipeTeleport implements IPipeTransportItem
 
         Orientations newPos = temp.get(worldObj.rand.nextInt(temp.size()));
         ////System.out.println(newPos.toString());
-        Position destPos = new Position(TempTeleport.get(i).xCoord, TempTeleport.get(i).yCoord, TempTeleport.get(i).zCoord, newPos);
+        Position destPos = new Position(connectedPipes.get(i).xCoord, connectedPipes.get(i).yCoord, connectedPipes.get(i).zCoord, newPos);
         //destPos.moveForwards(1.0);
 
         TileEntity tile = worldObj.getBlockTileEntity((int)destPos.x, (int)destPos.y, (int)destPos.z);
@@ -163,7 +176,7 @@ public class PipeItemTeleport extends PipeTeleport implements IPipeTransportItem
 
         result.add(newPos);
 
-        return result;
+        return result;*/
     }
     
     public boolean isValidTarget(Orientations o) {
