@@ -51,26 +51,6 @@ public class PipeLiquidsTeleport extends PipeTeleport implements IPipeTransportL
         return mod_AdditionalPipes.DEFUALT_LIQUID_TELEPORT_TEXTURE;
     }
 
-    /*
-    @Override
-    public void setPosition (int xCoord, int yCoord, int zCoord) {
-    	
-        LinkedList <PipeLiquidsTeleport> toRemove = new LinkedList <PipeLiquidsTeleport> ();
-
-        for (int i = 0; i < LiquidTeleportPipes.size(); i++) {
-            if (LiquidTeleportPipes.get(i).xCoord == xCoord &&  LiquidTeleportPipes.get(i).yCoord == yCoord && LiquidTeleportPipes.get(i).zCoord == zCoord) {
-                //System.out.println("Removed OldLoc: " + i);
-                toRemove.add(LiquidTeleportPipes.get(i));
-            }
-        }
-
-        LiquidTeleportPipes.removeAll(toRemove);
-        LiquidTeleportPipes.add(this);
-        
-        super.setPosition(xCoord, yCoord, zCoord);
-        //MutiPlayerProxy.AddChunkToList(xCoord, zCoord);
-    }*/
-
     @Override
     public int fill(Orientations from, int quantity, int id, boolean doFill) {
     	
@@ -105,6 +85,7 @@ public class PipeLiquidsTeleport extends PipeTeleport implements IPipeTransportL
     }
 
     public LinkedList<OilReturn> getPossibleLiquidMovements(Position pos) {
+    	
         LinkedList<OilReturn> result = new LinkedList<OilReturn>();
 
         for (int o = 0; o <= 5; ++o) {
@@ -113,10 +94,7 @@ public class PipeLiquidsTeleport extends PipeTeleport implements IPipeTransportL
             newPos.moveForwards(1.0);
 
             if (canReceiveLiquid2(newPos)) {
-
-                //For better handling in future
-                //int space = BuildCraftCore.OIL_BUCKET_QUANTITY / 4 - sideToCenter[((Orientations.values()[o]).reverse()).ordinal()] - centerToSide[((Orientations.values()[o]).reverse()).ordinal()] + flowRate;
-                result.add(new OilReturn(Orientations.values()[o], (ILiquidContainer) Utils.getTile(worldObj, newPos, Orientations.Unknown)));
+               result.add(new OilReturn(Orientations.values()[o], (ILiquidContainer) Utils.getTile(worldObj, newPos, Orientations.Unknown)));
             }
         }
 
@@ -124,13 +102,14 @@ public class PipeLiquidsTeleport extends PipeTeleport implements IPipeTransportL
     }
     
     public boolean canReceiveLiquid2(Position p) {
+    	
         TileEntity entity = worldObj.getBlockTileEntity((int) p.x, (int) p.y,
                             (int) p.z);
 
-        if (!Utils.checkPipesConnections(worldObj, entity, xCoord, yCoord, zCoord)) {
-            return false;
+        if (entity == null) {
+        	return false;
         }
-
+        
         if (entity instanceof IPipeEntry || entity instanceof ILiquidContainer) {
             return true;
         }
