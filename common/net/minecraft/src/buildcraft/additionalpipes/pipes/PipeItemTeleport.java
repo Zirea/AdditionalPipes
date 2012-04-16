@@ -12,8 +12,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import net.minecraft.src.IInventory;
+import net.minecraft.src.ItemStack;
 import net.minecraft.src.NBTTagCompound;
 import net.minecraft.src.TileEntity;
+import net.minecraft.src.World;
 import net.minecraft.src.buildcraft.additionalpipes.MutiPlayerProxy;
 import net.minecraft.src.buildcraft.additionalpipes.gui.GuiHandler;
 import net.minecraft.src.buildcraft.additionalpipes.logic.PipeLogicTeleport;
@@ -83,8 +85,6 @@ public class PipeItemTeleport extends PipeTeleport implements IPipeTransportItem
 
     @Override
     public LinkedList<Orientations> filterPossibleMovements(LinkedList<Orientations> possibleOrientations, Position pos, EntityPassiveItem item) {
-
-    	System.out.println(possibleOrientations);
     	
     	List<PipeTeleport> connectedPipes = getConnectedPipes(false);
         LinkedList<Orientations> result = new LinkedList<Orientations>();
@@ -98,103 +98,68 @@ public class PipeItemTeleport extends PipeTeleport implements IPipeTransportItem
         Random rand = new Random();
         PipeTeleport destPipe = connectedPipes.get(rand.nextInt(connectedPipes.size()));
         
-        if (!Utils.addToRandomPipeEntry(destPipe.container, Orientations.Unknown, item.item)) {
+        if (!addToRandomPipeEntry(destPipe.container, Orientations.Unknown, item.item, item.speed)) {
         	result.add(pos.orientation.reverse());
             return result;
         }
         
         return new LinkedList<Orientations>();
-        
-        
-        /*
-        int i = pipeRand.nextInt(connectedPipes.size());
-
-        LinkedList<Orientations> temp = new LinkedList<Orientations>();
-        
-        Position pos1 = connectedPipes.get(i).getPosition();
-        
-        for (int o = 0; o < 6; ++o) {
-            if (Orientations.values()[o] != pos1.orientation.reverse()
-                    && container.pipe.outputOpen(Orientations.values()[o])) {
-                Position newPos = new Position(pos1);
-                newPos.orientation = Orientations.values()[o];
-                newPos.moveForwards(1.0);
-                
-                if (isValidTarget(newPos.orientation)) {
-                    temp.add(newPos.orientation);
-                }
-            }
-        }
-
-        ////System.out.println("Temp: " + Temp.size());
-        if (temp.size() <= 0) {
-            result.add(pos.orientation.reverse());
-            return result;
-        }
-
-        Orientations newPos = temp.get(worldObj.rand.nextInt(temp.size()));
-        ////System.out.println(newPos.toString());
-        Position destPos = new Position(connectedPipes.get(i).xCoord, connectedPipes.get(i).yCoord, connectedPipes.get(i).zCoord, newPos);
-        //destPos.moveForwards(1.0);
-
-        TileEntity tile = worldObj.getBlockTileEntity((int)destPos.x, (int)destPos.y, (int)destPos.z);
-
-        if (tile instanceof TileGenericPipe) {
-            TileGenericPipe pipe = (TileGenericPipe)tile;
-
-            if (pipe.pipe.transport instanceof PipeTransportItems) {
-                //This pipe can actually receive items
-                idsToRemove.add(item.entityId);
-                ((PipeTransportItems) this.transport).scheduleRemoval(item);
-                Position newItemPos = getNewItemPos(destPos, newPos, Utils.getPipeFloorOf(item.item));
-                item.setPosition(newItemPos.x, newItemPos.y, newItemPos.z);
-                ((PipeTransportItems)pipe.pipe.transport).entityEntering(item, newPos);
-            }
-        }
-        else if (tile instanceof IPipeEntry) {
-            idsToRemove.add(item.entityId);
-            ((PipeTransportItems) this.transport).scheduleRemoval(item);
-            Position newItemPos = getNewItemPos(destPos, newPos, Utils.getPipeFloorOf(item.item));
-            item.setPosition(newItemPos.x, newItemPos.y, newItemPos.z);
-            ((IPipeEntry) tile).entityEntering(item, newPos);
-        }
-        else if (tile instanceof IInventory) {
-            StackUtil utils = new StackUtil(item.item);
-
-            if (!APIProxy.isClient(worldObj)) {
-                if (utils.checkAvailableSlot((IInventory) tile, true, destPos.orientation.reverse()) && utils.items.stackSize == 0) {
-                    idsToRemove.add(item.entityId);
-                    ((PipeTransportItems) this.transport).scheduleRemoval(item);
-                    // Do nothing, we're adding the object to the world
-                }
-                else {
-                    //Wont accept it return...
-                    newPos = pos.orientation.reverse();
-                }
-            }
-        }
-
-        result.add(newPos);
-
-        return result;*/
     }
     
-    public boolean isValidTarget(Orientations o) {
-    	
-    	TileEntity entity = container.getTile(o);
-    	
-    	if (entity instanceof IPipeEntry) {
-    		
+    public static boolean addToRandomPipeEntry (TileEntity tile, Orientations from, ItemStack items, float speed) {
+		World w = tile.worldObj;
+		
+		LinkedList <Orientations> possiblePipes = new LinkedList <Orientations> ();
+		
+		for (int j = 0; j < 6; ++j) {
+			if (from.reverse().ordinal() == j) {
+				continue;
+			}
+			
+			Position pos = new Position(tile.xCoord, tile.yCoord, tile.zCoord,
+					Orientations.values()[j]);
+			
+			pos.moveForwards(1.0);
+			
+			TileEntity pipeEntry = w.getBlockTileEntity((int) pos.x,
+					(int) pos.y, (int) pos.z);
+			
+			if (pipeEntry instanceof IPipeEntry && ((IPipeEntry) pipeEntry).acceptItems()) {
+				possiblePipes.add(Orientations.values()[j]);
+			}
+		}
+		
+		if (possiblePipes.size() > 0) {
+			int choice = w.rand.nextInt(possiblePipes.size());
+			
+			Position entityPos = new Position(tile.xCoord, tile.yCoord, tile.zCoord,
+					possiblePipes.get(choice));
+			Position pipePos = new Position(tile.xCoord, tile.yCoord, tile.zCoord,
+					possiblePipes.get(choice));
+			
+			entityPos.x += 0.5;
+			entityPos.y += Utils.getPipeFloorOf(items);
+			entityPos.z += 0.5;
+			
+			entityPos.moveForwards(0.5);
+			
+			pipePos.moveForwards(1.0);
+			
+			IPipeEntry pipeEntry = (IPipeEntry) w.getBlockTileEntity(
+					(int) pipePos.x, (int) pipePos.y, (int) pipePos.z);
+			
+			EntityPassiveItem entity = new EntityPassiveItem(w, entityPos.x,
+					entityPos.y, entityPos.z, items);
+			
+			entity.speed = speed;
+			
+			pipeEntry.entityEntering(entity, entityPos.orientation);
+			items.stackSize = 0;
 			return true;
 		}
-    	else if (entity instanceof TileGenericPipe) {
-    		
-			TileGenericPipe pipe = (TileGenericPipe) entity;
-			return pipe.pipe.transport instanceof PipeTransportItems;
-		}
-    	
-    	return false;
-    }
+		
+		return false;
+	}
     
     public Position getNewItemPos(Position Old, Orientations newPos, float f) {
         //Utils.getPipeFloorOf(data.item.item)
