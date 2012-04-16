@@ -2,7 +2,6 @@ package net.minecraft.src.buildcraft.additionalpipes.chunkloader;
 
 import java.util.List;
 import java.util.Set;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.src.*;
 import net.minecraft.src.buildcraft.additionalpipes.chunkloader.TileChunkLoader;
@@ -19,8 +18,6 @@ public class ChunkLoadingHandler implements IChunkLoadHandler {
         if (mc.theWorld != null && mc.theWorld.isRemote) {
             return;
         }
-        
-        
 
         for (TileChunkLoader tile : TileChunkLoader.chunkLoaderList) {
 
