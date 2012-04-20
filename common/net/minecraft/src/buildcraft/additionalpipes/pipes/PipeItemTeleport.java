@@ -98,7 +98,7 @@ public class PipeItemTeleport extends PipeTeleport implements IPipeTransportItem
         Random rand = new Random();
         PipeTeleport destPipe = connectedPipes.get(rand.nextInt(connectedPipes.size()));
         
-        if (!addToRandomPipeEntry(destPipe.container, Orientations.Unknown, item.item, item.speed)) {
+        if (!addToRandomPipeEntry(destPipe.container, Orientations.Unknown, item)) {
         	result.add(pos.orientation.reverse());
             return result;
         }
@@ -106,7 +106,8 @@ public class PipeItemTeleport extends PipeTeleport implements IPipeTransportItem
         return new LinkedList<Orientations>();
     }
     
-    public static boolean addToRandomPipeEntry (TileEntity tile, Orientations from, ItemStack items, float speed) {
+    public static boolean addToRandomPipeEntry (TileEntity tile, Orientations from, EntityPassiveItem item) {
+    	
 		World w = tile.worldObj;
 		
 		LinkedList <Orientations> possiblePipes = new LinkedList <Orientations> ();
@@ -130,31 +131,25 @@ public class PipeItemTeleport extends PipeTeleport implements IPipeTransportItem
 		}
 		
 		if (possiblePipes.size() > 0) {
+			
 			int choice = w.rand.nextInt(possiblePipes.size());
 			
-			Position entityPos = new Position(tile.xCoord, tile.yCoord, tile.zCoord,
-					possiblePipes.get(choice));
-			Position pipePos = new Position(tile.xCoord, tile.yCoord, tile.zCoord,
-					possiblePipes.get(choice));
-			
+			Position entityPos = new Position(tile.xCoord, tile.yCoord, tile.zCoord, possiblePipes.get(choice));
 			entityPos.x += 0.5;
-			entityPos.y += Utils.getPipeFloorOf(items);
+			entityPos.y += Utils.getPipeFloorOf(item.item);
 			entityPos.z += 0.5;
-			
 			entityPos.moveForwards(0.5);
 			
+			Position pipePos = new Position(tile.xCoord, tile.yCoord, tile.zCoord, possiblePipes.get(choice));
 			pipePos.moveForwards(1.0);
 			
 			IPipeEntry pipeEntry = (IPipeEntry) w.getBlockTileEntity(
 					(int) pipePos.x, (int) pipePos.y, (int) pipePos.z);
 			
-			EntityPassiveItem entity = new EntityPassiveItem(w, entityPos.x,
-					entityPos.y, entityPos.z, items);
+			item.setPosition(entityPos.x, entityPos.y, entityPos.z);
 			
-			entity.speed = speed;
+			pipeEntry.entityEntering(item, entityPos.orientation);
 			
-			pipeEntry.entityEntering(entity, entityPos.orientation);
-			items.stackSize = 0;
 			return true;
 		}
 		
