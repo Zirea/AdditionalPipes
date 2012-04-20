@@ -31,7 +31,7 @@ public class BlockChunkLoader extends BlockContainer implements ITextureProvider
 
 	@Override
 	public String getTextureFile() {
-		return "/net/minecraft/src/buildcraft/additionalpipes/gui/chunkloader.png";
+		return "/net/minecraft/src/buildcraft/additionalpipes/resources/chunkloader.png";
 	}
 
 }
