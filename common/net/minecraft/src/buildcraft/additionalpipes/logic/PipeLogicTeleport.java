@@ -8,6 +8,7 @@ import net.minecraft.src.NBTTagCompound;
 import net.minecraft.src.TileEntity;
 import net.minecraft.src.mod_AdditionalPipes;
 import net.minecraft.src.buildcraft.additionalpipes.gui.GuiHandler;
+import net.minecraft.src.buildcraft.additionalpipes.pipes.PipeTeleport;
 import net.minecraft.src.buildcraft.api.TileNetworkData;
 import net.minecraft.src.buildcraft.transport.Pipe;
 import net.minecraft.src.buildcraft.transport.PipeLogic;
@@ -55,28 +56,25 @@ public class PipeLogicTeleport extends PipeLogic {
 	@Override
     public boolean isPipeConnected(TileEntity tile) {
 		
-        Pipe pipe = null;
-
-        if (tile instanceof TileGenericPipe) {
-            pipe = ((TileGenericPipe) tile).pipe;
+		if (tile == null || !(tile instanceof TileGenericPipe)) {
+        	return false;
         }
+		
+        Pipe pipe = ((TileGenericPipe) tile).pipe;
 
         if (BuildCraftTransport.alwaysConnectPipes) {
             return super.isPipeConnected(tile);
         }
-        else {
-        	
-        	if (pipe == null) {
-        		return false;
-        	}
-        	
-        	if (this.container.pipe.getClass().equals(pipe.getClass()) && super.isPipeConnected(tile)) {
-        		return true;
-        	}
-        	
-        	
-        	return true;
+        
+        if (pipe instanceof PipeTeleport) {
+        	return false;
         }
+
+        if (super.isPipeConnected(tile)) {
+    		return true;
+    	}
+
+        return false;
     }
 	
 	public void writeToNBT(NBTTagCompound nbttagcompound) {

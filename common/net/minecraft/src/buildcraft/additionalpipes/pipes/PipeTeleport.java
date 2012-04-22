@@ -8,6 +8,8 @@ import net.minecraft.src.buildcraft.additionalpipes.logic.PipeLogicTeleport;
 import net.minecraft.src.buildcraft.api.EntityPassiveItem;
 import net.minecraft.src.buildcraft.api.Orientations;
 import net.minecraft.src.buildcraft.api.Position;
+import net.minecraft.src.buildcraft.core.PersistentWorld;
+import net.minecraft.src.buildcraft.transport.BlockGenericPipe;
 import net.minecraft.src.buildcraft.transport.IPipeTransportItemsHook;
 import net.minecraft.src.buildcraft.transport.Pipe;
 import net.minecraft.src.buildcraft.transport.PipeLogic;
@@ -39,11 +41,11 @@ public abstract class PipeTeleport extends Pipe {
 		List<PipeTeleport> temp = new LinkedList<PipeTeleport>();
         removeOldPipes();
         
-        PipeLogicTeleport logic = (PipeLogicTeleport) this.logic;
+        PipeLogicTeleport logic = this.logic;
 
         for (PipeTeleport pipe : teleportPipes) {
         	
-        	if (!this.getClass().equals(pipe.getClass())) {
+        	if (!pipe.isValid() || !this.getClass().equals(pipe.getClass())) {
         		continue;
         	}
         	
@@ -73,8 +75,9 @@ public abstract class PipeTeleport extends Pipe {
 
         for (PipeTeleport pipe : teleportPipes) {
         	
-        	if (!(worldObj.getBlockTileEntity(pipe.xCoord, pipe.yCoord, pipe.zCoord) instanceof TileGenericPipe)) {
+        	if (!BlockGenericPipe.isValid(pipe)) {
         		toRemove.add(pipe);
+        		worldObj.removeBlockTileEntity(pipe.xCoord, pipe.yCoord, pipe.zCoord);
         	}
         }
 
@@ -82,7 +85,6 @@ public abstract class PipeTeleport extends Pipe {
     }
 	
 	public Position getPosition() {
-        return new Position (xCoord, yCoord, zCoord);
+		return new Position(xCoord, yCoord, zCoord);
 	}
-
 }
