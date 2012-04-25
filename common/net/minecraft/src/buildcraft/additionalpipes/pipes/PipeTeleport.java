@@ -2,8 +2,10 @@ package net.minecraft.src.buildcraft.additionalpipes.pipes;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import net.minecraft.src.buildcraft.additionalpipes.MutiPlayerProxy;
+import net.minecraft.src.buildcraft.additionalpipes.core.FrequencyMap;
 import net.minecraft.src.buildcraft.additionalpipes.logic.PipeLogicTeleport;
 import net.minecraft.src.buildcraft.api.EntityPassiveItem;
 import net.minecraft.src.buildcraft.api.Orientations;
@@ -23,12 +25,14 @@ public abstract class PipeTeleport extends Pipe {
 	public static List<PipeTeleport> teleportPipes = new LinkedList<PipeTeleport>();
 	
 	public PipeTeleport(PipeTransport transport, PipeLogicTeleport logic, int itemID) {
+		
 		super(transport, logic, itemID);
 		this.logic = logic;
 	}
 	
 	@Override
 	public void updateEntity() {
+		
 		super.updateEntity();
 		
 		if (!teleportPipes.contains(this)) {
@@ -87,4 +91,6 @@ public abstract class PipeTeleport extends Pipe {
 	public Position getPosition() {
 		return new Position(xCoord, yCoord, zCoord);
 	}
+	
+	public abstract FrequencyMap getFrequencyMap();
 }

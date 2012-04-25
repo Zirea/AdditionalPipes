@@ -25,6 +25,7 @@ import net.minecraft.src.buildcraft.transport.Pipe;
 import net.minecraft.src.buildcraft.transport.PipeTransportLiquids;
 import net.minecraft.src.buildcraft.transport.TileGenericPipe;
 import net.minecraft.src.buildcraft.additionalpipes.MutiPlayerProxy;
+import net.minecraft.src.buildcraft.additionalpipes.core.FrequencyMap;
 import net.minecraft.src.buildcraft.additionalpipes.logic.PipeLogicTeleport;
 import net.minecraft.src.buildcraft.additionalpipes.network.NetworkID;
 
@@ -38,6 +39,8 @@ public class PipeLiquidsTeleport extends PipeTeleport implements IPipeTransportL
             iliquid = b;
         }
     }
+    
+    public static FrequencyMap freqencyMap = new FrequencyMap();
 
     public PipeLiquidsTeleport(int itemID) {
         super(new PipeTransportLiquids(), new PipeLogicTeleport(NetworkID.GUI_PIPE_TP), itemID);
@@ -120,5 +123,10 @@ public class PipeLiquidsTeleport extends PipeTeleport implements IPipeTransportL
     public Position getPosition() {
         return new Position (xCoord, yCoord, zCoord);
     }
+    
+    @Override
+	public FrequencyMap getFrequencyMap() {
+		return freqencyMap;
+	}
 
 }

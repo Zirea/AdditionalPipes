@@ -10,6 +10,7 @@ package net.minecraft.src.buildcraft.additionalpipes.pipes;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import net.minecraft.src.IInventory;
 import net.minecraft.src.ItemStack;
@@ -17,6 +18,7 @@ import net.minecraft.src.NBTTagCompound;
 import net.minecraft.src.TileEntity;
 import net.minecraft.src.World;
 import net.minecraft.src.buildcraft.additionalpipes.MutiPlayerProxy;
+import net.minecraft.src.buildcraft.additionalpipes.core.FrequencyMap;
 import net.minecraft.src.buildcraft.additionalpipes.gui.GuiHandler;
 import net.minecraft.src.buildcraft.additionalpipes.logic.PipeLogicTeleport;
 import net.minecraft.src.buildcraft.additionalpipes.network.NetworkID;
@@ -34,6 +36,8 @@ import net.minecraft.src.mod_AdditionalPipes;
 
 public class PipeItemTeleport extends PipeTeleport implements IPipeTransportItemsHook {
     
+	public static FrequencyMap freqencyMap = new FrequencyMap();
+	
     public PipeItemTeleport(int itemID) {
         super(new PipeTransportItems(), new PipeLogicTeleport(NetworkID.GUI_PIPE_TP), itemID);
     }
@@ -127,5 +131,10 @@ public class PipeItemTeleport extends PipeTeleport implements IPipeTransportItem
 
     @Override
     public void entityEntered(EntityPassiveItem item, Orientations orientation) {}
+
+	@Override
+	public FrequencyMap getFrequencyMap() {
+		return freqencyMap;
+	}
 
 }

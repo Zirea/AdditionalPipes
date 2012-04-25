@@ -19,7 +19,6 @@ import net.minecraft.src.buildcraft.transport.TileGenericPipe;
 public class GuiTeleportPipe extends GuiContainer {
 
 	private PipeTeleport pipe;
-    private GuiButton[] buttons = new GuiButton[7];
 
     public GuiTeleportPipe(TileGenericPipe thisPipe) {
         super(new ContainerTeleportPipe());
@@ -35,14 +34,15 @@ public class GuiTeleportPipe extends GuiContainer {
         super.initGui();
         int bw = this.xSize - 20;
 
-        controlList.add(this.buttons[0] =  new GuiButton(1, (width - this.xSize) / 2 + 10, (height - this.ySize) / 2 + 20, bw / 6, 20, "-100"));
-        controlList.add(this.buttons[1] =  new GuiButton(2, (width - this.xSize) / 2 + 12 + bw / 6, (height - this.ySize) / 2 + 20, bw / 6, 20, "-10"));
-        controlList.add(this.buttons[2] =  new GuiButton(3, (width - this.xSize) / 2 + 12 + bw * 2 / 6, (height - this.ySize) / 2 + 20, bw / 6, 20, "-1"));
-        controlList.add(this.buttons[3] =  new GuiButton(4, (width - this.xSize) / 2 + 12 + bw * 3 / 6, (height - this.ySize) / 2 + 20, bw / 6, 20, "+1"));
-        controlList.add(this.buttons[4] =  new GuiButton(5, (width - this.xSize) / 2 + 12 + bw * 4 / 6, (height - this.ySize) / 2 + 20, bw / 6, 20, "+10"));
-        controlList.add(this.buttons[5] =  new GuiButton(6, (width - this.xSize) / 2 + 16 + bw * 5 / 6, (height - this.ySize) / 2 + 20, bw / 6, 20, "+100"));
-        controlList.add(this.buttons[6] =  new GuiButton(7, (width - this.xSize) / 2 + 16, (height - this.ySize) / 2 + 52, bw / 6, 20, "Switch"));
+        controlList.add(new GuiButton(1, (width - this.xSize) / 2 + 10, (height - this.ySize) / 2 + 20, bw / 6, 20, "-100"));
+        controlList.add(new GuiButton(2, (width - this.xSize) / 2 + 12 + bw / 6, (height - this.ySize) / 2 + 20, bw / 6, 20, "-10"));
+        controlList.add(new GuiButton(3, (width - this.xSize) / 2 + 12 + bw * 2 / 6, (height - this.ySize) / 2 + 20, bw / 6, 20, "-1"));
+        controlList.add(new GuiButton(4, (width - this.xSize) / 2 + 12 + bw * 3 / 6, (height - this.ySize) / 2 + 20, bw / 6, 20, "+1"));
+        controlList.add(new GuiButton(5, (width - this.xSize) / 2 + 12 + bw * 4 / 6, (height - this.ySize) / 2 + 20, bw / 6, 20, "+10"));
+        controlList.add(new GuiButton(6, (width - this.xSize) / 2 + 16 + bw * 5 / 6, (height - this.ySize) / 2 + 20, bw / 6, 20, "+100"));
+        controlList.add(new GuiButton(7, (width - this.xSize) / 2 + 16, (height - this.ySize) / 2 + 52, bw / 6, 20, "Switch"));
     }
+    
     protected void drawGuiContainerForegroundLayer() {
 
         fontRenderer.drawString("Frequency: " + pipe.logic.freq, 8, 6, 0x404040);
@@ -55,6 +55,7 @@ public class GuiTeleportPipe extends GuiContainer {
         //fontRenderer.drawString(filterInventory.getInvName(), 8, 6, 0x404040);
         //fontRenderer.drawString(playerInventory.getInvName(), 8, ySize - 97, 0x404040);
     }
+    
     protected void actionPerformed(GuiButton guibutton) {
     	
         switch(guibutton.id) {

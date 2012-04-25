@@ -17,6 +17,7 @@ import net.minecraft.src.buildcraft.core.CoreProxy;
 import net.minecraft.src.buildcraft.transport.BlockGenericPipe;
 import net.minecraft.src.buildcraft.transport.Pipe;
 import net.minecraft.src.forge.Configuration;
+import net.minecraft.src.forge.ISaveEventHandler;
 import net.minecraft.src.forge.MinecraftForge;
 import net.minecraft.src.forge.MinecraftForgeClient;
 import net.minecraft.src.forge.NetworkMod;
@@ -172,6 +173,7 @@ public class mod_AdditionalPipes extends NetworkMod {
         ModLoader.registerKey(this, laserKeyBinding, false);
         ModLoader.addLocalization("laserKeyBinding", "Turn on/off chunk loader boundries");
 
+        //MinecraftForge.registerSaveHandler(this);
         MinecraftForge.setGuiHandler(this, new GuiHandler());
         MinecraftForge.registerChunkLoadHandler(new ChunkLoadingHandler());
         //MinecraftForge.registerConnectionHandler(new NetworkHandler());
@@ -186,17 +188,7 @@ public class mod_AdditionalPipes extends NetworkMod {
 
         System.out.println("Additional Pipes: " + msg);
     }
-
-    public static World getWorld(int dimension) {
-        if (mc.theWorld.worldProvider.isHellWorld && dimension == -1) {
-            return mc.theWorld;
-        }
-        else if (dimension == 0) {
-            return mc.theWorld;
-        }
-
-        return null;
-    }
+    
     public boolean wasMutiPlayer = false;
 
     @Override

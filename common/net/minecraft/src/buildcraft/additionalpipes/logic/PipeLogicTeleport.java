@@ -27,6 +27,10 @@ public class PipeLogicTeleport extends PipeLogic {
 		this.guiId = guiId;
 	}
 	
+	public void toggleReceive() {
+		canReceive = !canReceive;
+	}
+	
 	@Override
     public boolean blockActivated(EntityPlayer entityplayer) {
         

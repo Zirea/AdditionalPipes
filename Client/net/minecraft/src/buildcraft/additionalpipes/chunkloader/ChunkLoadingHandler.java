@@ -7,8 +7,10 @@ import net.minecraft.src.*;
 import net.minecraft.src.buildcraft.additionalpipes.chunkloader.TileChunkLoader;
 import net.minecraft.src.buildcraft.core.CoreProxy;
 import net.minecraft.src.forge.IChunkLoadHandler;
+import net.minecraft.src.forge.ISaveEventHandler;
+import net.minecraft.src.forge.MinecraftForge;
 
-public class ChunkLoadingHandler implements IChunkLoadHandler {
+public class ChunkLoadingHandler implements IChunkLoadHandler, ISaveEventHandler {
 
     private Minecraft mc = ModLoader.getMinecraftInstance();
     
@@ -63,4 +65,27 @@ public class ChunkLoadingHandler implements IChunkLoadHandler {
     public boolean canUpdateEntity(Entity entity) {
         return true;
     }
+
+	@Override
+	public void onWorldLoad(World world) { 
+		
+	}
+
+	@Override
+	public void onWorldSave(World world) {
+		
+		
+	}
+
+	@Override
+	public void onChunkLoad(World world, Chunk chunk) { }
+
+	@Override
+	public void onChunkUnload(World world, Chunk chunk) { }
+
+	@Override
+	public void onChunkSaveData(World world, Chunk chunk, NBTTagCompound data) { }
+
+	@Override
+	public void onChunkLoadData(World world, Chunk chunk, NBTTagCompound data) { }
 }

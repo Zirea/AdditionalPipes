@@ -24,7 +24,7 @@ public class GuiHandler implements IGuiHandler {
         switch(id) {
         
             case NetworkID.GUI_PIPE_TP:
-                return new GuiTeleportPipe((TileGenericPipe)tile);
+                return new GuiTeleportPipeNew((TileGenericPipe)tile);
                 
             case NetworkID.GUI_PIPE_DIST:
                 return new GuiDistributionPipe((TileGenericPipe)tile);
