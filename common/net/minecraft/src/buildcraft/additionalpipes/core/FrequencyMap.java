@@ -3,6 +3,8 @@ package net.minecraft.src.buildcraft.additionalpipes.core;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import net.minecraft.src.NBTTagCompound;
+
 public class FrequencyMap {
 
 	private HashMap<Integer, String> map = new HashMap<Integer, String>();
@@ -52,6 +54,35 @@ public class FrequencyMap {
 	
 	public String formatName(int freq) {
 		return new StringBuilder().append(getFreqName(freq)).append(" (").append(freq).append(")").toString();
+	}
+	
+	public void writeToNBT(NBTTagCompound nbt) {
+		
+		int i = 1;
+		nbt.setInteger("numFrequencyMappings", i);
+		
+		for (int freq : map.keySet()) {
+			
+			nbt.setString("freqMapping" + i, freq + ":" + map.get(freq));
+			i++;
+		}
+	}
+	
+	public void readFromNBT(NBTTagCompound nbt) {
+		
+		ArrayList<String> mappings = new ArrayList<String>();
+		
+		int i = nbt.getInteger("numFrequencyMappings");
+		while (i > 0) {
+			mappings.add(nbt.getString("freqMapping" + i));
+			i--;
+		}
+		
+		for (String mapping : mappings) {
+			
+			String[] parts = mapping.split(":");
+			map.put(Integer.parseInt(parts[0]), parts[1]);
+		}
 	}
 	
 }
