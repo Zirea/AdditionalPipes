@@ -114,9 +114,7 @@ public class GuiTeleportPipeNew extends GuiScreen implements IGuiIndirectButtons
 
 		drawDefaultBackground();
 		drawContainerBackground();
-
-		super.drawScreen(i, j, f);// buttons
-
+		
 		GL11.glDisable(2896 /* GL_LIGHTING */);
 		GL11.glDisable(2929 /* GL_DEPTH_TEST */);
 
@@ -128,6 +126,8 @@ public class GuiTeleportPipeNew extends GuiScreen implements IGuiIndirectButtons
 
 		textboxFreq.drawTextBox();
 		textboxName.drawTextBox();
+		
+		super.drawScreen(i, j, f);// buttons
 
 		GL11.glEnable(2896 /* GL_LIGHTING */);
 		GL11.glEnable(2929 /* GL_DEPTH_TEST */);
@@ -139,9 +139,9 @@ public class GuiTeleportPipeNew extends GuiScreen implements IGuiIndirectButtons
 
 	private void updateNames() {
 
-		String name = frequencyMap.getFreqName(selectedFreq);
+		String frequencyName = frequencyMap.getFreqName(selectedFreq);
 		String typedName = textboxName.getText();
-		boolean set = name == null || name.equals("") || !name.equals(typedName);
+		boolean set = frequencyName == null || frequencyName.equals("") || !frequencyName.equals(typedName);
 		boolean canset = !typedName.equals("") && !nameIsUsed(typedName);
 
 		setNameButton.enabled = set && canset;
@@ -150,11 +150,10 @@ public class GuiTeleportPipeNew extends GuiScreen implements IGuiIndirectButtons
 		removeNameButton.drawButton = !set;
 		
 		if (set) {
-			slotNames.updateNameList(mc.thePlayer, textboxName.getText());
+			slotNames.updateNameList(frequencyMap.getNames(), textboxName.getText());
 		}
-		else if (name.equals(typedName)) {
-			slotNames.updateNameList(mc.thePlayer, "");// set name can pick from
-														// box
+		else if (frequencyName.equals(typedName)) {
+			slotNames.updateNameList(frequencyMap.getNames(), "");
 			slotNames.removeName(typedName);
 		}
 		else {
@@ -226,6 +225,7 @@ public class GuiTeleportPipeNew extends GuiScreen implements IGuiIndirectButtons
 	private void pressRemNameButton() {
 
 		frequencyMap.removeFreqName(selectedFreq);
+		textboxName.setText("");
 		//NEED TO SEND NETWORK UPDATE
 	}
 

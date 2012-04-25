@@ -9,6 +9,7 @@ import codechicken.core.IGuiIndirectButtons;
 
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.FontRenderer;
+import net.minecraft.src.buildcraft.additionalpipes.core.FrequencyMap;
 
 public class GuiNameSlot extends GuiScrollSlot
 {
@@ -50,8 +51,8 @@ public class GuiNameSlot extends GuiScrollSlot
 	public void drawOverlay()
 	{
 		super.drawOverlay();
-		//drawRect(x, y - 7, x + width, y - 1, 0xFFC6C6C6);//top box blend
-		//drawRect(x, y + height + 1, x + width, y + height + 6, 0xFFC6C6C6);//bottom box blend
+		drawRect(x, y - 7, x + width, y - 1, 0xFFC6C6C6);//top box blend
+		drawRect(x, y + height + 1, x + width, y + height + 6, 0xFFC6C6C6);//bottom box blend
 	}
 	
 	protected void drawSlot(int slot, int x, int y, boolean selected)
@@ -134,9 +135,9 @@ public class GuiNameSlot extends GuiScrollSlot
 		Collections.sort(names, new NameSlotComparator());
 	}
 	
-	public void updateNameList(EntityPlayer player, String match)
+	public void updateNameList(ArrayList names, String match)
 	{
-		//names = RedstoneEther.getAllowedNames(player);
+		this.names = names;
 		this.match = match;
 		sortNames();
 	}
