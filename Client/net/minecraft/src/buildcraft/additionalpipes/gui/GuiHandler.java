@@ -1,9 +1,7 @@
 package net.minecraft.src.buildcraft.additionalpipes.gui;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.src.buildcraft.additionalpipes.gui.*;
 import net.minecraft.src.buildcraft.additionalpipes.network.NetworkID;
-import net.minecraft.src.buildcraft.additionalpipes.pipes.PipeItemsAdvancedWood;
 import net.minecraft.src.buildcraft.transport.TileGenericPipe;
 import net.minecraft.src.forge.IGuiHandler;
 import net.minecraft.src.*;

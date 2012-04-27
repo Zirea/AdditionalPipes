@@ -2,21 +2,13 @@ package net.minecraft.src.buildcraft.additionalpipes.pipes;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-
 import net.minecraft.src.buildcraft.additionalpipes.MutiPlayerProxy;
 import net.minecraft.src.buildcraft.additionalpipes.logic.PipeLogicTeleport;
 import net.minecraft.src.buildcraft.additionalpipes.util.FrequencyMap;
-import net.minecraft.src.buildcraft.api.EntityPassiveItem;
-import net.minecraft.src.buildcraft.api.Orientations;
 import net.minecraft.src.buildcraft.api.Position;
-import net.minecraft.src.buildcraft.core.PersistentWorld;
 import net.minecraft.src.buildcraft.transport.BlockGenericPipe;
-import net.minecraft.src.buildcraft.transport.IPipeTransportItemsHook;
 import net.minecraft.src.buildcraft.transport.Pipe;
-import net.minecraft.src.buildcraft.transport.PipeLogic;
 import net.minecraft.src.buildcraft.transport.PipeTransport;
-import net.minecraft.src.buildcraft.transport.TileGenericPipe;
 
 public abstract class PipeTeleport extends Pipe {
 
@@ -53,7 +45,7 @@ public abstract class PipeTeleport extends Pipe {
         		continue;
         	}
         	
-        	PipeLogicTeleport pipeLogic = (PipeLogicTeleport) pipe.logic;
+        	PipeLogicTeleport pipeLogic = pipe.logic;
         	
     		if (pipeLogic.owner.equalsIgnoreCase(logic.owner) || MutiPlayerProxy.isOnServer() == false) {
             	

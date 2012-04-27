@@ -10,27 +10,17 @@ package net.minecraft.src.buildcraft.additionalpipes.pipes;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import net.minecraft.src.IInventory;
-import net.minecraft.src.ItemStack;
-import net.minecraft.src.NBTTagCompound;
 import net.minecraft.src.TileEntity;
 import net.minecraft.src.World;
-import net.minecraft.src.buildcraft.additionalpipes.MutiPlayerProxy;
-import net.minecraft.src.buildcraft.additionalpipes.gui.GuiHandler;
 import net.minecraft.src.buildcraft.additionalpipes.logic.PipeLogicTeleport;
 import net.minecraft.src.buildcraft.additionalpipes.network.NetworkID;
 import net.minecraft.src.buildcraft.additionalpipes.util.FrequencyMap;
-import net.minecraft.src.buildcraft.additionalpipes.util.SaveManager;
 import net.minecraft.src.buildcraft.api.*;
-import net.minecraft.src.buildcraft.core.StackUtil;
 import net.minecraft.src.buildcraft.core.Utils;
 /*import net.minecraft.src.buildcraft.core.network.PacketPayload;
 import net.minecraft.src.buildcraft.core.network.PacketUpdate;
 import net.minecraft.src.buildcraft.core.network.TilePacketWrapper;*/
 import net.minecraft.src.buildcraft.transport.IPipeTransportItemsHook;
-import net.minecraft.src.buildcraft.transport.Pipe;
 import net.minecraft.src.buildcraft.transport.PipeTransportItems;
 import net.minecraft.src.buildcraft.transport.TileGenericPipe;
 import net.minecraft.src.mod_AdditionalPipes;

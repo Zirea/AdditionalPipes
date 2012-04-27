@@ -2,11 +2,7 @@ package net.minecraft.src.buildcraft.additionalpipes;
 
 import java.io.File;
 import net.minecraft.client.Minecraft;
-import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.ModLoader;
-import net.minecraft.src.buildcraft.additionalpipes.gui.*;
-import net.minecraft.src.buildcraft.api.APIProxy;
-import net.minecraft.src.buildcraft.transport.TileGenericPipe;
 
 public class MutiPlayerProxy {
     public static boolean NeedsLoad = true;

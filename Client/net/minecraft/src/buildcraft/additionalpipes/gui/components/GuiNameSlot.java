@@ -7,15 +7,14 @@ import java.util.Comparator;
 import codechicken.core.GuiScrollSlot;
 import codechicken.core.IGuiIndirectButtons;
 
-import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.FontRenderer;
-import net.minecraft.src.buildcraft.additionalpipes.util.FrequencyMap;
 
 public class GuiNameSlot extends GuiScrollSlot
 {
 	public class NameSlotComparator implements Comparator<String>
 	{
-	    public int compare(String s1, String s2) 
+	    @Override
+		public int compare(String s1, String s2) 
 	    {
 	    	boolean match1 = doesNameMatch(s1, match);
 	    	boolean match2 = doesNameMatch(s2, match);
@@ -38,16 +37,19 @@ public class GuiNameSlot extends GuiScrollSlot
 		names = new ArrayList<String>();
 	}
 	
+	@Override
 	public int getSlotHeight()
 	{
 		return 10;
 	}
 
+	@Override
 	protected int getNumSlots()
 	{
 		return names.size();
 	}
 	
+	@Override
 	public void drawOverlay()
 	{
 		super.drawOverlay();
@@ -55,6 +57,7 @@ public class GuiNameSlot extends GuiScrollSlot
 		drawRect(x, y + height + 1, x + width, y + height + 6, 0xFFC6C6C6);//bottom box blend
 	}
 	
+	@Override
 	protected void drawSlot(int slot, int x, int y, boolean selected)
 	{
 		String name = names.get(slot);
@@ -74,6 +77,7 @@ public class GuiNameSlot extends GuiScrollSlot
 		fontRenderer.drawString(name, x, y, colour);
 	}
 	
+	@Override
 	protected void slotClicked(int slot, boolean doubleclick)
 	{
 		if(doubleclick)
@@ -86,11 +90,13 @@ public class GuiNameSlot extends GuiScrollSlot
 		}
 	}
 	
+	@Override
 	protected boolean isSlotSelected(int slot)
 	{
 		return slot == selectedslot;
 	}
 	
+	@Override
 	public void selectNext()
 	{
 		if(selectedslot == -1)
@@ -108,6 +114,7 @@ public class GuiNameSlot extends GuiScrollSlot
 		showSlot(selectedslot);
 	}
 	
+	@Override
 	public void selectPrev()
 	{
 		if(selectedslot == -1)
@@ -125,6 +132,7 @@ public class GuiNameSlot extends GuiScrollSlot
 		showSlot(selectedslot);
 	}
 	
+	@Override
 	protected void unfocus()
 	{
 		selectedslot = -1;

@@ -5,11 +5,8 @@ import java.util.Set;
 import net.minecraft.client.Minecraft;
 import net.minecraft.src.*;
 import net.minecraft.src.buildcraft.additionalpipes.chunkloader.TileChunkLoader;
-import net.minecraft.src.buildcraft.core.CoreProxy;
-import net.minecraft.src.forge.DimensionManager;
 import net.minecraft.src.forge.IChunkLoadHandler;
 import net.minecraft.src.forge.ISaveEventHandler;
-import net.minecraft.src.forge.MinecraftForge;
 
 public class ChunkLoadingHandler implements IChunkLoadHandler, ISaveEventHandler {
 

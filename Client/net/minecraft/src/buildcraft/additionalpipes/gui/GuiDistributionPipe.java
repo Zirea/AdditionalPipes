@@ -2,11 +2,8 @@ package net.minecraft.src.buildcraft.additionalpipes.gui;
 
 import net.minecraft.src.GuiButton;
 import net.minecraft.src.GuiContainer;
-import net.minecraft.src.ModLoader;
-import net.minecraft.src.mod_AdditionalPipes;
 import net.minecraft.src.buildcraft.transport.TileGenericPipe;
 import net.minecraft.src.buildcraft.additionalpipes.logic.PipeLogicDistributor;
-import net.minecraft.src.buildcraft.additionalpipes.network.NetworkID;
 //import net.minecraft.src.buildcraft.additionalpipes.network.PacketAdditionalPipes;
 import net.minecraft.src.buildcraft.additionalpipes.pipes.PipeItemsDistributor;
 //import net.minecraft.src.buildcraft.core.network.PacketPayload;
@@ -168,7 +165,8 @@ public class GuiDistributionPipe extends GuiContainer {
 
     }
 
-    protected void drawGuiContainerBackgroundLayer(float f, int x, int y) {
+    @Override
+	protected void drawGuiContainerBackgroundLayer(float f, int x, int y) {
         int i = mc.renderEngine.getTexture("/net/minecraft/src/buildcraft/additionalpipes/resources/DistGUI.png");
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         mc.renderEngine.bindTexture(i);

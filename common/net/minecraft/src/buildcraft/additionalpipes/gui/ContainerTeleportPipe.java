@@ -8,7 +8,8 @@ public class ContainerTeleportPipe extends Container {
     public boolean isUsableByPlayer(EntityPlayer entityplayer) {
         return true;
     }
-    public boolean canInteractWith(EntityPlayer entityplayer) {
+    @Override
+	public boolean canInteractWith(EntityPlayer entityplayer) {
         // TODO Auto-generated method stub
         return true;
     }

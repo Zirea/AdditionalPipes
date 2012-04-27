@@ -24,7 +24,6 @@ import net.minecraft.src.buildcraft.transport.IPipeTransportItemsHook;
 import net.minecraft.src.buildcraft.transport.Pipe;
 import net.minecraft.src.buildcraft.transport.PipeLogicStone;
 import net.minecraft.src.buildcraft.transport.PipeTransportItems;
-import net.minecraft.src.buildcraft.additionalpipes.MutiPlayerProxy;
 
 public class PipeItemsAdvancedInsertion extends Pipe implements IPipeTransportItemsHook {
 

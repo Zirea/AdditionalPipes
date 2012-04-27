@@ -7,7 +7,6 @@ import net.minecraft.src.ItemStack;
 import net.minecraft.src.NBTTagCompound;
 import net.minecraft.src.TileEntity;
 import net.minecraft.src.mod_AdditionalPipes;
-import net.minecraft.src.buildcraft.additionalpipes.gui.GuiHandler;
 import net.minecraft.src.buildcraft.additionalpipes.pipes.PipeTeleport;
 import net.minecraft.src.buildcraft.api.TileNetworkData;
 import net.minecraft.src.buildcraft.transport.Pipe;
@@ -81,6 +80,7 @@ public class PipeLogicTeleport extends PipeLogic {
         return false;
     }
 	
+	@Override
 	public void writeToNBT(NBTTagCompound nbttagcompound) {
 		super.writeToNBT(nbttagcompound);
 		
@@ -89,6 +89,7 @@ public class PipeLogicTeleport extends PipeLogic {
 		nbttagcompound.setString("owner", owner);
 	}
 
+	@Override
 	public void readFromNBT(NBTTagCompound nbttagcompound) {
 		super.readFromNBT(nbttagcompound);
 		

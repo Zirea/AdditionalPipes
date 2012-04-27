@@ -1,8 +1,5 @@
 package net.minecraft.src.buildcraft.additionalpipes.gui;
 
-import java.beans.FeatureDescriptor;
-import java.util.ArrayList;
-
 import net.minecraft.src.*;
 import net.minecraft.src.buildcraft.additionalpipes.gui.components.GuiBetterTextField;
 import net.minecraft.src.buildcraft.additionalpipes.gui.components.GuiButtonShorter;
@@ -13,7 +10,6 @@ import net.minecraft.src.buildcraft.transport.TileGenericPipe;
 
 import org.lwjgl.opengl.GL11;
 
-import codechicken.core.CoreUtils;
 import codechicken.core.IGuiIndirectButtons;
 
 public class GuiTeleportPipeNew extends GuiScreen implements IGuiIndirectButtons {

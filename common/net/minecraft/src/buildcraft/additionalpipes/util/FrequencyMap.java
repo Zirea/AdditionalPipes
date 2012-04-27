@@ -1,6 +1,5 @@
 package net.minecraft.src.buildcraft.additionalpipes.util;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -8,17 +7,25 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import net.minecraft.src.NBTTagCompound;
-
 public class FrequencyMap implements Serializable {
 
 	private Map<String, BidiMap> map = new HashMap<String, BidiMap>();
 
 	public Set<Integer> keys(String username) {
+		
+		if (map.get(username) == null) {
+			return null;
+		}
+		
 		return map.get(username).keys();
 	}
 	
 	public Collection<String> values(String username) {
+		
+		if (map.get(username) == null) {
+			return null;
+		}
+		
 		return map.get(username).values();
 	}
 	
@@ -54,6 +61,11 @@ public class FrequencyMap implements Serializable {
 	}
 
 	public void removeFreqName(String username, int selectedFreq) {
+		
+		if (map.get(username) == null) {
+			return;
+		}
+		
 		map.get(username).removeByKey(selectedFreq);
 	}
 

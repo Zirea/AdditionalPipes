@@ -12,6 +12,7 @@ public class GuiButtonShorter extends GuiButton
 		super(i, j, k, l, i1, s);
 	}
 	
+	@Override
 	public void drawButton(Minecraft minecraft, int i, int j)
 	{
 		if(!drawButton)

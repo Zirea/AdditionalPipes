@@ -1,7 +1,5 @@
 package net.minecraft.src.buildcraft.additionalpipes.util;
 
-import java.io.BufferedOutputStream;
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -17,7 +15,6 @@ import net.minecraft.src.AnvilChunkLoader;
 import net.minecraft.src.IChunkLoader;
 import net.minecraft.src.ISaveHandler;
 import net.minecraft.src.ModLoader;
-import net.minecraft.src.NBTTagCompound;
 import net.minecraft.src.World;
 import net.minecraft.src.forge.DimensionManager;
 

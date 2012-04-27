@@ -11,20 +11,14 @@ package net.minecraft.src.buildcraft.additionalpipes.pipes;
 import java.util.LinkedList;
 import java.util.List;
 
-import net.minecraft.src.ModLoader;
-import net.minecraft.src.NBTTagCompound;
 import net.minecraft.src.TileEntity;
 import net.minecraft.src.mod_AdditionalPipes;
 import net.minecraft.src.buildcraft.api.IPowerReceptor;
 import net.minecraft.src.buildcraft.api.Orientations;
 import net.minecraft.src.buildcraft.api.Position;
-import net.minecraft.src.buildcraft.api.TileNetworkData;
-import net.minecraft.src.buildcraft.core.Utils;
 import net.minecraft.src.buildcraft.transport.IPipeTransportPowerHook;
-import net.minecraft.src.buildcraft.transport.Pipe;
 import net.minecraft.src.buildcraft.transport.PipeTransportPower;
 import net.minecraft.src.buildcraft.transport.TileGenericPipe;
-import net.minecraft.src.buildcraft.additionalpipes.*;
 import net.minecraft.src.buildcraft.additionalpipes.logic.PipeLogicTeleport;
 import net.minecraft.src.buildcraft.additionalpipes.network.NetworkID;
 import net.minecraft.src.buildcraft.additionalpipes.util.FrequencyMap;
@@ -199,7 +193,8 @@ public class PipePowerTeleport extends PipeTeleport implements IPipeTransportPow
         return (int) Math.sqrt(((xCoord - x) * (xCoord - x)) + ((yCoord - y) * (yCoord - y)) + ((zCoord - z) * (zCoord - z)));
     }
     
-    public Position getPosition() {
+    @Override
+	public Position getPosition() {
         return new Position (xCoord, yCoord, zCoord);
     }
 
