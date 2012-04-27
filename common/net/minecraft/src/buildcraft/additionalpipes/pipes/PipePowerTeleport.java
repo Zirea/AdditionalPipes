@@ -24,220 +24,233 @@ import net.minecraft.src.buildcraft.additionalpipes.network.NetworkID;
 import net.minecraft.src.buildcraft.additionalpipes.util.FrequencyMap;
 
 public class PipePowerTeleport extends PipeTeleport implements IPipeTransportPowerHook {
-	
-    public class PowerReturn {
-        public TileEntity tile;
-        public Orientations ori;
 
-        public PowerReturn(TileEntity te, Orientations o) {
-            tile = te;
-            ori = o;
-        }
-    }
-    
-    public static FrequencyMap freqencyMap = new FrequencyMap();
-    
-    public PipePowerTeleport(int itemID) {
-        super(new PipeTransportPower(), new PipeLogicTeleport(NetworkID.GUI_PIPE_TP), itemID);
+	public class PowerReturn {
 
-    }
+		public TileEntity tile;
+		public Orientations ori;
 
-    @Override
-    public int getMainBlockTexture() {
-        return mod_AdditionalPipes.DEFUALT_POWER_TELEPORT_TEXTURE;
-    }
+		public PowerReturn(TileEntity te, Orientations o) {
 
-    public double calculateLoss(int distance, double power) {
-    	
-        return power;
-    }
+			tile = te;
+			ori = o;
+		}
+	}
 
-    @Override
-    public void receiveEnergy(Orientations from, double val) {
-    	
-        ((PipeTransportPower)this.transport).step();
-        List<PipeTeleport> pipeList = getConnectedPipes(false);
-        List<PipeTeleport> sendingToList = new LinkedList<PipeTeleport>();
+	public static FrequencyMap freqencyMap = new FrequencyMap();
 
-        if (pipeList.size() == 0) {
-            return;
-        }
+	public PipePowerTeleport(int itemID) {
 
-        for (int a = 0; a < pipeList.size(); a++) {
-            if (TeleportNeedsPower(pipeList.get(a)).size() > 0) {
-                sendingToList.add(pipeList.get(a));
-            }
-        }
+		super(new PipeTransportPower(), new PipeLogicTeleport(NetworkID.GUI_PIPE_TP), itemID);
 
-        if (sendingToList.size() == 0) {
-            return;
-        }
+	}
 
-        double powerToSend = val / sendingToList.size();
+	@Override
+	public int getMainBlockTexture() {
 
-        //System.out.println("SendingToList: " + sendingToList.size() + " - PowerToSend: " + powerToSend);
-        for (int a = 0; a < sendingToList.size(); a++) {
-            List<PowerReturn> needsPower = TeleportNeedsPower(sendingToList.get(a));
+		return mod_AdditionalPipes.DEFUALT_POWER_TELEPORT_TEXTURE;
+	}
 
-            if (needsPower.size() == 0) {
-                return;
-            }
+	public double calculateLoss(int distance, double power) {
 
-            double powerToSendAfterLoss = calculateLoss(getDistance(sendingToList.get(a).xCoord, sendingToList.get(a).yCoord, sendingToList.get(a).zCoord), powerToSend);
-            //System.out.println("Power After Loss: " + powerToSendAfterLoss);
-            double powerToSend2 = powerToSendAfterLoss / needsPower.size();
+		return power;
+	}
 
-            //System.out.println("needsPower: " + needsPower.size() + " - PowerToSend2: " + powerToSend2);
-            for (int b = 0; b < needsPower.size(); b++) {
-                if (needsPower.get(b).tile instanceof TileGenericPipe) {
-                    TileGenericPipe nearbyTile = (TileGenericPipe) needsPower.get(b).tile;
-                    PipeTransportPower nearbyTransport = (PipeTransportPower) nearbyTile.pipe.transport;
-                    nearbyTransport.receiveEnergy(needsPower.get(b).ori, powerToSend);
-                }
-                else if (needsPower.get(b).tile instanceof IPowerReceptor) {
-                    IPowerReceptor pow = (IPowerReceptor) needsPower.get(b);
-                    pow.getPowerProvider().receiveEnergy((float)powerToSend,needsPower.get(b).ori);
-                }
-            }
+	@Override
+	public void receiveEnergy(Orientations from, double val) {
 
-        }
+		((PipeTransportPower) this.transport).step();
+		List<PipeTeleport> pipeList = getConnectedPipes(false);
+		List<PipeTeleport> sendingToList = new LinkedList<PipeTeleport>();
 
-    }
-    
-    public List<PowerReturn> TeleportNeedsPower(PipeTeleport a) {
-    	
-        LinkedList<Orientations> theList = getRealPossibleMovements(a.getPosition());
-        List<PowerReturn> needsPower = new LinkedList<PowerReturn>();
+		if (pipeList.size() == 0) {
+			return;
+		}
 
-        if (theList.size() > 0) {
-            for (int b = 0; b < theList.size(); b++) {
-                Orientations newPos = theList.get(b);
-                Position destPos = new Position(a.xCoord, a.yCoord, a.zCoord, newPos);
-                destPos.moveForwards(1.0);
-                TileEntity tile = worldObj.getBlockTileEntity((int)destPos.x, (int)destPos.y, (int)destPos.z);
+		for (int a = 0; a < pipeList.size(); a++) {
+			if (TeleportNeedsPower(pipeList.get(a)).size() > 0) {
+				sendingToList.add(pipeList.get(a));
+			}
+		}
 
-                if (TileNeedsPower(tile)) {
-                    needsPower.add(new PowerReturn(tile, newPos.reverse()));
-                }
+		if (sendingToList.size() == 0) {
+			return;
+		}
 
-            }
-        }
+		double powerToSend = val / sendingToList.size();
 
-        return needsPower;
-    }
-    
-    public boolean TileNeedsPower(TileEntity tile) {
+		// System.out.println("SendingToList: " + sendingToList.size() +
+		// " - PowerToSend: " + powerToSend);
+		for (int a = 0; a < sendingToList.size(); a++) {
+			List<PowerReturn> needsPower = TeleportNeedsPower(sendingToList.get(a));
 
-        if (tile instanceof TileGenericPipe) {
-            PipeTransportPower ttb = (PipeTransportPower) ((TileGenericPipe)tile).pipe.transport;
+			if (needsPower.size() == 0) {
+				return;
+			}
 
-            for (int i = 0; i < ttb.powerQuery.length; i++)
-                if (ttb.powerQuery[i] > 0) {
-                    return true;
-                }
-        }
-        else if (tile instanceof IPowerReceptor) {
-        }
+			double powerToSendAfterLoss = calculateLoss(getDistance(sendingToList.get(a).xCoord, sendingToList.get(a).yCoord, sendingToList.get(a).zCoord), powerToSend);
+			// System.out.println("Power After Loss: " + powerToSendAfterLoss);
+			double powerToSend2 = powerToSendAfterLoss / needsPower.size();
 
-        return false;
-    }
-    
-    public LinkedList<Orientations> getRealPossibleMovements(Position pos) {
-        LinkedList<Orientations> result = new LinkedList<Orientations>();
+			// System.out.println("needsPower: " + needsPower.size() +
+			// " - PowerToSend2: " + powerToSend2);
+			for (int b = 0; b < needsPower.size(); b++) {
+				if (needsPower.get(b).tile instanceof TileGenericPipe) {
+					TileGenericPipe nearbyTile = (TileGenericPipe) needsPower.get(b).tile;
+					PipeTransportPower nearbyTransport = (PipeTransportPower) nearbyTile.pipe.transport;
+					nearbyTransport.receiveEnergy(needsPower.get(b).ori, powerToSend);
+				}
+				else if (needsPower.get(b).tile instanceof IPowerReceptor) {
+					IPowerReceptor pow = (IPowerReceptor) needsPower.get(b);
+					pow.getPowerProvider().receiveEnergy((float) powerToSend, needsPower.get(b).ori);
+				}
+			}
 
-        for (int o = 0; o < 6; ++o) {
-            if (Orientations.values()[o] != pos.orientation.reverse() && container.pipe.outputOpen(Orientations.values()[o])) {
-                Position newPos = new Position(pos);
-                newPos.orientation = Orientations.values()[o];
-                newPos.moveForwards(1.0);
+		}
 
-                if (canReceivePower(newPos)) {
-                    result.add(newPos.orientation);
-                }
-            }
-        }
+	}
 
-        return result;
-    }
-    
-    public boolean canReceivePower(Position p) {
-        TileEntity entity = worldObj.getBlockTileEntity((int) p.x, (int) p.y, (int) p.z);
-        if (!(entity instanceof IPowerReceptor))
-            return false;
-        if(!(entity instanceof TileGenericPipe))
-            return false;
-        if(! (((TileGenericPipe)entity).pipe.transport instanceof PipeTransportPower))
-            return false;
-   
-    return true;
-    }
-    /*
-    @Override
-    public void setPosition (int xCoord, int yCoord, int zCoord) {
-    	
-        LinkedList <PipePowerTeleport> toRemove = new LinkedList <PipePowerTeleport> ();
+	public List<PowerReturn> TeleportNeedsPower(PipeTeleport a) {
 
-        for (int i = 0; i < PowerTeleportPipes.size(); i++) {
-            if (PowerTeleportPipes.get(i).xCoord == xCoord &&  PowerTeleportPipes.get(i).yCoord == yCoord && PowerTeleportPipes.get(i).zCoord == zCoord) {
-                //System.out.println("Removed OldLoc: " + i);
-                toRemove.add(PowerTeleportPipes.get(i));
-            }
-        }
+		LinkedList<Orientations> theList = getRealPossibleMovements(a.getPosition());
+		List<PowerReturn> needsPower = new LinkedList<PowerReturn>();
 
-        PowerTeleportPipes.removeAll(toRemove);
-        PowerTeleportPipes.add(this);
-        super.setPosition(xCoord, yCoord, zCoord);
-    }*/
+		if (theList.size() > 0) {
+			for (int b = 0; b < theList.size(); b++) {
+				Orientations newPos = theList.get(b);
+				Position destPos = new Position(a.xCoord, a.yCoord, a.zCoord, newPos);
+				destPos.moveForwards(1.0);
+				TileEntity tile = worldObj.getBlockTileEntity((int) destPos.x, (int) destPos.y, (int) destPos.z);
 
-    public int getDistance(int x, int y, int z) {
-        return (int) Math.sqrt(((xCoord - x) * (xCoord - x)) + ((yCoord - y) * (yCoord - y)) + ((zCoord - z) * (zCoord - z)));
-    }
-    
-    @Override
+				if (TileNeedsPower(tile)) {
+					needsPower.add(new PowerReturn(tile, newPos.reverse()));
+				}
+
+			}
+		}
+
+		return needsPower;
+	}
+
+	public boolean TileNeedsPower(TileEntity tile) {
+
+		if (tile instanceof TileGenericPipe) {
+			PipeTransportPower ttb = (PipeTransportPower) ((TileGenericPipe) tile).pipe.transport;
+
+			for (int i = 0; i < ttb.powerQuery.length; i++)
+				if (ttb.powerQuery[i] > 0) {
+					return true;
+				}
+		}
+		else if (tile instanceof IPowerReceptor) {
+		}
+
+		return false;
+	}
+
+	public LinkedList<Orientations> getRealPossibleMovements(Position pos) {
+
+		LinkedList<Orientations> result = new LinkedList<Orientations>();
+
+		for (int o = 0; o < 6; ++o) {
+			if (Orientations.values()[o] != pos.orientation.reverse() && container.pipe.outputOpen(Orientations.values()[o])) {
+				Position newPos = new Position(pos);
+				newPos.orientation = Orientations.values()[o];
+				newPos.moveForwards(1.0);
+
+				if (canReceivePower(newPos)) {
+					result.add(newPos.orientation);
+				}
+			}
+		}
+
+		return result;
+	}
+
+	public boolean canReceivePower(Position p) {
+
+		TileEntity entity = worldObj.getBlockTileEntity((int) p.x, (int) p.y, (int) p.z);
+		if (!(entity instanceof IPowerReceptor))
+			return false;
+		if (!(entity instanceof TileGenericPipe))
+			return false;
+		if (!(((TileGenericPipe) entity).pipe.transport instanceof PipeTransportPower))
+			return false;
+
+		return true;
+	}
+
+	/*
+	 * @Override public void setPosition (int xCoord, int yCoord, int zCoord) {
+	 * 
+	 * LinkedList <PipePowerTeleport> toRemove = new LinkedList
+	 * <PipePowerTeleport> ();
+	 * 
+	 * for (int i = 0; i < PowerTeleportPipes.size(); i++) { if
+	 * (PowerTeleportPipes.get(i).xCoord == xCoord &&
+	 * PowerTeleportPipes.get(i).yCoord == yCoord &&
+	 * PowerTeleportPipes.get(i).zCoord == zCoord) {
+	 * //System.out.println("Removed OldLoc: " + i);
+	 * toRemove.add(PowerTeleportPipes.get(i)); } }
+	 * 
+	 * PowerTeleportPipes.removeAll(toRemove); PowerTeleportPipes.add(this);
+	 * super.setPosition(xCoord, yCoord, zCoord); }
+	 */
+
+	public int getDistance(int x, int y, int z) {
+
+		return (int) Math.sqrt(((xCoord - x) * (xCoord - x)) + ((yCoord - y) * (yCoord - y)) + ((zCoord - z) * (zCoord - z)));
+	}
+
+	@Override
 	public Position getPosition() {
-        return new Position (xCoord, yCoord, zCoord);
-    }
 
-    @Override
-    public void requestEnergy(Orientations from, int is) {
-    	
-        ((PipeTransportPower)this.transport).step();
+		return new Position(xCoord, yCoord, zCoord);
+	}
 
-        if (!logic.canReceive) { //No need to waste CPU
-            return;
-        }
+	@Override
+	public void requestEnergy(Orientations from, int is) {
 
-        List<PipeTeleport> pipeList = getConnectedPipes(true);
+		((PipeTransportPower) this.transport).step();
 
-        if (pipeList.size() == 0) {
-            return;
-        }
+		if (!logic.canReceive) { // No need to waste CPU
+			return;
+		}
 
-        for (int a = 0; a < pipeList.size(); a++) {
-            LinkedList<Orientations> theList = getRealPossibleMovements(pipeList.get(a).getPosition());
+		List<PipeTeleport> pipeList = getConnectedPipes(true);
 
-            if (theList.size() > 0) {
-                for (int b = 0; b < theList.size(); b++) {
-                    Orientations newPos = theList.get(b);
-                    Position destPos = new Position(pipeList.get(a).xCoord, pipeList.get(a).yCoord, pipeList.get(a).zCoord, newPos);
-                    destPos.moveForwards(1.0);
+		if (pipeList.size() == 0) {
+			return;
+		}
 
-                    //System.out.println(getPosition().toString() + " RequestEnergy: " + from.toString() + " - Val: " + is + " - Dest: " + destPos.toString());
+		for (int a = 0; a < pipeList.size(); a++) {
+			LinkedList<Orientations> theList = getRealPossibleMovements(pipeList.get(a).getPosition());
 
-                    TileEntity tile = worldObj.getBlockTileEntity((int)destPos.x, (int)destPos.y, (int)destPos.z);
+			if (theList.size() > 0) {
+				for (int b = 0; b < theList.size(); b++) {
+					Orientations newPos = theList.get(b);
+					Position destPos = new Position(pipeList.get(a).xCoord, pipeList.get(a).yCoord, pipeList.get(a).zCoord, newPos);
+					destPos.moveForwards(1.0);
 
-                    if (tile instanceof TileGenericPipe) {
-                        TileGenericPipe nearbyTile = (TileGenericPipe) tile;
-                        PipeTransportPower nearbyTransport = (PipeTransportPower) nearbyTile.pipe.transport;
-                        nearbyTransport.requestEnergy(newPos.reverse(), is);
-                    }
-                }
-            }
-        }
-    }
-    
-    @Override
+					// System.out.println(getPosition().toString() +
+					// " RequestEnergy: " + from.toString() + " - Val: " + is +
+					// " - Dest: " + destPos.toString());
+
+					TileEntity tile = worldObj.getBlockTileEntity((int) destPos.x, (int) destPos.y, (int) destPos.z);
+
+					if (tile instanceof TileGenericPipe) {
+						TileGenericPipe nearbyTile = (TileGenericPipe) tile;
+						PipeTransportPower nearbyTransport = (PipeTransportPower) nearbyTile.pipe.transport;
+						nearbyTransport.requestEnergy(newPos.reverse(), is);
+					}
+				}
+			}
+		}
+	}
+
+	@Override
 	public FrequencyMap getFrequencyMap() {
+
 		return freqencyMap;
 	}
 

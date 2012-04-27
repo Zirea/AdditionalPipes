@@ -31,177 +31,176 @@ import net.minecraft.src.buildcraft.additionalpipes.logic.PipeLogicAdvancedWood;
 
 public class PipeItemsAdvancedWood extends Pipe implements IPowerReceptor {
 
-    private PowerProvider powerProvider;
+	private PowerProvider powerProvider;
 
-    private int baseTexture = mod_AdditionalPipes.DEFUALT_ADVANCEDWOOD_TEXTURE;
-    private int plainTexture = mod_AdditionalPipes.DEFUALT_ADVANCEDWOOD_TEXTURE_CLOSED;
+	private int baseTexture = mod_AdditionalPipes.DEFUALT_ADVANCEDWOOD_TEXTURE;
+	private int plainTexture = mod_AdditionalPipes.DEFUALT_ADVANCEDWOOD_TEXTURE_CLOSED;
 
-    public PipeItemsAdvancedWood(int itemID) {
-    	
-        super(new PipeTransportItems(), new PipeLogicAdvancedWood(), itemID);
+	public PipeItemsAdvancedWood(int itemID) {
 
-        powerProvider = PowerFramework.currentFramework.createPowerProvider();
-        powerProvider.configure(50, 1, 64, 1, 64);
-        powerProvider.configurePowerPerdition(64, 1);
-        
-        ((PipeLogicAdvancedWood) logic).nextTexture = baseTexture;
-    }
+		super(new PipeTransportItems(), new PipeLogicAdvancedWood(), itemID);
 
-    @Override
-    public int getMainBlockTexture() {
-         return ((PipeLogicAdvancedWood) logic).nextTexture;
-    }
+		powerProvider = PowerFramework.currentFramework.createPowerProvider();
+		powerProvider.configure(50, 1, 64, 1, 64);
+		powerProvider.configurePowerPerdition(64, 1);
 
-    @Override
-    public void prepareTextureFor(Orientations connection) {
-    	
-        if (connection == Orientations.Unknown) {
-        	((PipeLogicAdvancedWood) logic).nextTexture = baseTexture;
-        }
-        else {
-            int metadata = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
+		((PipeLogicAdvancedWood) logic).nextTexture = baseTexture;
+	}
 
-            if (metadata == connection.ordinal()) {
-            	((PipeLogicAdvancedWood) logic).nextTexture = plainTexture;
-            }
-            else {
-            	((PipeLogicAdvancedWood) logic).nextTexture = baseTexture;
-            }
-        }
+	@Override
+	public int getMainBlockTexture() {
 
-    }
+		return ((PipeLogicAdvancedWood) logic).nextTexture;
+	}
 
-    @Override
-    public void setPowerProvider(PowerProvider provider) {
-        provider = powerProvider;
-    }
+	@Override
+	public void prepareTextureFor(Orientations connection) {
 
-    @Override
-    public PowerProvider getPowerProvider() {
-        return powerProvider;
-    }
+		if (connection == Orientations.Unknown) {
+			((PipeLogicAdvancedWood) logic).nextTexture = baseTexture;
+		}
+		else {
+			int metadata = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
 
-    @Override
-    public void doWork() {
-        if (powerProvider.energyStored <= 0) {
-            return;
-        }
+			if (metadata == connection.ordinal()) {
+				((PipeLogicAdvancedWood) logic).nextTexture = plainTexture;
+			}
+			else {
+				((PipeLogicAdvancedWood) logic).nextTexture = baseTexture;
+			}
+		}
 
-        World w = worldObj;
+	}
 
-        int meta = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
+	@Override
+	public void setPowerProvider(PowerProvider provider) {
 
-        if (meta > 5) {
-            return;
-        }
+		provider = powerProvider;
+	}
 
-        Position pos = new Position(xCoord, yCoord, zCoord,
-                                    Orientations.values()[meta]);
-        pos.moveForwards(1);
-        int blockId = w.getBlockId((int) pos.x, (int) pos.y, (int) pos.z);
-        TileEntity tile = w.getBlockTileEntity((int) pos.x, (int) pos.y,
-                                               (int) pos.z);
+	@Override
+	public PowerProvider getPowerProvider() {
 
-        if (tile == null
-                || !(tile instanceof IInventory || tile instanceof ILiquidContainer)
-                || PipeLogicWood
-                .isExcludedFromExtraction(Block.blocksList[blockId])) {
-            return;
-        }
+		return powerProvider;
+	}
 
-        if (tile instanceof IInventory) {
-            IInventory inventory = (IInventory) tile;
+	@Override
+	public void doWork() {
 
-            ItemStack stack = checkExtract(inventory, true,
-                                           pos.orientation.reverse());
+		if (powerProvider.energyStored <= 0) {
+			return;
+		}
 
-            if (stack == null || stack.stackSize == 0) {
-                powerProvider.useEnergy(1, 1, false);
-                return;
-            }
+		World w = worldObj;
 
-            Position entityPos = new Position(pos.x + 0.5, pos.y
-                                              + Utils.getPipeFloorOf(stack), pos.z + 0.5,
-                                              pos.orientation.reverse());
+		int meta = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
 
-            entityPos.moveForwards(0.5);
+		if (meta > 5) {
+			return;
+		}
 
-            EntityPassiveItem entity = new EntityPassiveItem(w, entityPos.x,
-                    entityPos.y, entityPos.z, stack);
+		Position pos = new Position(xCoord, yCoord, zCoord, Orientations.values()[meta]);
+		pos.moveForwards(1);
+		int blockId = w.getBlockId((int) pos.x, (int) pos.y, (int) pos.z);
+		TileEntity tile = w.getBlockTileEntity((int) pos.x, (int) pos.y, (int) pos.z);
 
-            ((PipeTransportItems) transport).entityEntering(entity,
-                    entityPos.orientation);
-        }
-    }
+		if (tile == null || !(tile instanceof IInventory || tile instanceof ILiquidContainer) || PipeLogicWood.isExcludedFromExtraction(Block.blocksList[blockId])) {
+			return;
+		}
 
-    /**
-     * Return the itemstack that can be if something can be extracted from this
-     * inventory, null if none. On certain cases, the extractable slot depends
-     * on the position of the pipe.
-     */
-    public ItemStack checkExtract(IInventory inventory, boolean doRemove,
-                                  Orientations from) {
-        //		if (inventory instanceof ISpecialInventory) {
-        //			//At the moment we are going to let special inventorys handle there own. Might change if popular demand
-        //			return ((ISpecialInventory) inventory).extractItem(doRemove, from);
-        //		}
-        IInventory inv = Utils.getInventory(inventory);
-        ItemStack result = checkExtractGeneric(inv, doRemove, from);
-        return result;
-    }
+		if (tile instanceof IInventory) {
+			IInventory inventory = (IInventory) tile;
 
-    public ItemStack checkExtractGeneric(IInventory inventory,
-                                         boolean doRemove, Orientations from) {
-        for (int k = 0; k < inventory.getSizeInventory(); ++k) {
-            if (inventory.getStackInSlot(k) != null
-                    && inventory.getStackInSlot(k).stackSize > 0) {
+			ItemStack stack = checkExtract(inventory, true, pos.orientation.reverse());
 
-                ItemStack slot = inventory.getStackInSlot(k);
+			if (stack == null || stack.stackSize == 0) {
+				powerProvider.useEnergy(1, 1, false);
+				return;
+			}
 
-                if (slot != null && slot.stackSize > 0 && CanExtract(slot)) {
-                    if (doRemove) {
-                        return inventory.decrStackSize(k, (int) powerProvider.useEnergy(1, slot.stackSize, true));
-                    }
-                    else {
-                        return slot;
-                    }
-                }
-            }
-        }
+			Position entityPos = new Position(pos.x + 0.5, pos.y + Utils.getPipeFloorOf(stack), pos.z + 0.5, pos.orientation.reverse());
 
-        return null;
-    }
-    public boolean CanExtract(ItemStack item) {
-        for (int i = 0; i < logic.getSizeInventory(); i++) {
-            ItemStack stack = logic.getStackInSlot(i);
+			entityPos.moveForwards(0.5);
 
-            if (stack != null && stack.itemID == item.itemID) {
-                if ((Item.itemsList[item.itemID].isDamageable())) {
-                    return !((PipeLogicAdvancedWood)this.logic).exclude;
-                }
-                else if (stack.getItemDamage() == item.getItemDamage()) {
-                    return !((PipeLogicAdvancedWood)this.logic).exclude;
-                }
-            }
-        }
+			EntityPassiveItem entity = new EntityPassiveItem(w, entityPos.x, entityPos.y, entityPos.z, stack);
 
-        return ((PipeLogicAdvancedWood)this.logic).exclude;
-    }
+			((PipeTransportItems) transport).entityEntering(entity, entityPos.orientation);
+		}
+	}
 
-    @Override
-    public int powerRequest() {
-        return getPowerProvider().maxEnergyReceived;
-    }
+	/**
+	 * Return the itemstack that can be if something can be extracted from this
+	 * inventory, null if none. On certain cases, the extractable slot depends
+	 * on the position of the pipe.
+	 */
+	public ItemStack checkExtract(IInventory inventory, boolean doRemove, Orientations from) {
 
-    @Override
-    public void writeToNBT(NBTTagCompound nbttagcompound) {
-        super.writeToNBT(nbttagcompound);
+		// if (inventory instanceof ISpecialInventory) {
+		// //At the moment we are going to let special inventorys handle there
+		// own. Might change if popular demand
+		// return ((ISpecialInventory) inventory).extractItem(doRemove, from);
+		// }
+		IInventory inv = Utils.getInventory(inventory);
+		ItemStack result = checkExtractGeneric(inv, doRemove, from);
+		return result;
+	}
 
-    }
+	public ItemStack checkExtractGeneric(IInventory inventory, boolean doRemove, Orientations from) {
 
-    @Override
-    public void readFromNBT(NBTTagCompound nbttagcompound) {
-        super.readFromNBT(nbttagcompound);
+		for (int k = 0; k < inventory.getSizeInventory(); ++k) {
+			if (inventory.getStackInSlot(k) != null && inventory.getStackInSlot(k).stackSize > 0) {
 
-    }
+				ItemStack slot = inventory.getStackInSlot(k);
+
+				if (slot != null && slot.stackSize > 0 && CanExtract(slot)) {
+					if (doRemove) {
+						return inventory.decrStackSize(k, (int) powerProvider.useEnergy(1, slot.stackSize, true));
+					}
+					else {
+						return slot;
+					}
+				}
+			}
+		}
+
+		return null;
+	}
+
+	public boolean CanExtract(ItemStack item) {
+
+		for (int i = 0; i < logic.getSizeInventory(); i++) {
+			ItemStack stack = logic.getStackInSlot(i);
+
+			if (stack != null && stack.itemID == item.itemID) {
+				if ((Item.itemsList[item.itemID].isDamageable())) {
+					return !((PipeLogicAdvancedWood) this.logic).exclude;
+				}
+				else if (stack.getItemDamage() == item.getItemDamage()) {
+					return !((PipeLogicAdvancedWood) this.logic).exclude;
+				}
+			}
+		}
+
+		return ((PipeLogicAdvancedWood) this.logic).exclude;
+	}
+
+	@Override
+	public int powerRequest() {
+
+		return getPowerProvider().maxEnergyReceived;
+	}
+
+	@Override
+	public void writeToNBT(NBTTagCompound nbttagcompound) {
+
+		super.writeToNBT(nbttagcompound);
+
+	}
+
+	@Override
+	public void readFromNBT(NBTTagCompound nbttagcompound) {
+
+		super.readFromNBT(nbttagcompound);
+
+	}
 }

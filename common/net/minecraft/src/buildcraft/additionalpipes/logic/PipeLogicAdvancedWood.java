@@ -22,194 +22,200 @@ import net.minecraft.src.*;
 
 public class PipeLogicAdvancedWood extends PipeLogic {
 
-    @TileNetworkData (staticSize = 9)
-    public ItemStack [] items = new ItemStack [9];
-    
-    @TileNetworkData
-    public boolean exclude = false;
-    
-    @TileNetworkData
-    public int nextTexture;
+	@TileNetworkData(staticSize = 9)
+	public ItemStack[] items = new ItemStack[9];
 
-    public void switchSource () {
-    	
-        int meta = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
-        int newMeta = 6;
+	@TileNetworkData
+	public boolean exclude = false;
 
-        for (int i = meta + 1; i <= meta + 6; ++i) {
-        	
-            Orientations o = Orientations.values() [i % 6];
+	@TileNetworkData
+	public int nextTexture;
 
-            Position pos = new Position (xCoord, yCoord, zCoord, o);
+	public void switchSource() {
 
-            pos.moveForwards(1);
+		int meta = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
+		int newMeta = 6;
 
-            TileEntity tile = worldObj.getBlockTileEntity((int) pos.x, (int) pos.y,
-                              (int) pos.z);
+		for (int i = meta + 1; i <= meta + 6; ++i) {
 
-            if (isInput (tile)) {
-                newMeta = o.ordinal();
-                break;
-            }
-        }
+			Orientations o = Orientations.values()[i % 6];
 
-        if (newMeta != meta) {
-            worldObj.setBlockMetadata(xCoord, yCoord, zCoord, newMeta);
-            worldObj.markBlockNeedsUpdate(xCoord, yCoord, zCoord);
-        }
-    }
+			Position pos = new Position(xCoord, yCoord, zCoord, o);
 
-    public boolean isInput(TileEntity tile) {
-        return !(tile instanceof TileGenericPipe)
-               && (tile instanceof IInventory || tile instanceof ILiquidContainer)
-               &&  Utils.checkPipesConnections(worldObj, container, tile.xCoord, tile.yCoord, tile.zCoord);
-    }
+			pos.moveForwards(1);
 
+			TileEntity tile = worldObj.getBlockTileEntity((int) pos.x, (int) pos.y, (int) pos.z);
 
-    @Override
-    public boolean blockActivated(EntityPlayer entityplayer) {
-        
-        ItemStack equippedItem = entityplayer.getCurrentEquippedItem();
-        
-        if (equippedItem != null) {
+			if (isInput(tile)) {
+				newMeta = o.ordinal();
+				break;
+			}
+		}
 
-            if (equippedItem.getItem() == BuildCraftCore.wrenchItem) {
-                switchSource();
-                return true;
-            }
+		if (newMeta != meta) {
+			worldObj.setBlockMetadata(xCoord, yCoord, zCoord, newMeta);
+			worldObj.markBlockNeedsUpdate(xCoord, yCoord, zCoord);
+		}
+	}
 
-            if (mod_AdditionalPipes.isPipe(equippedItem.getItem())) {
-                return false;
-            }
-        }
+	public boolean isInput(TileEntity tile) {
 
-        entityplayer.openGui(mod_AdditionalPipes.instance, NetworkID.GUI_PIPE_WOODEN_ADV, 
-                container.worldObj, container.xCoord, container.yCoord, container.zCoord);
+		return !(tile instanceof TileGenericPipe) && (tile instanceof IInventory || tile instanceof ILiquidContainer)
+				&& Utils.checkPipesConnections(worldObj, container, tile.xCoord, tile.yCoord, tile.zCoord);
+	}
 
-        return true;
-    }
+	@Override
+	public boolean blockActivated(EntityPlayer entityplayer) {
 
-    @Override
-    public boolean isPipeConnected(TileEntity tile) {
-        Pipe pipe2 = null;
+		ItemStack equippedItem = entityplayer.getCurrentEquippedItem();
 
-        if (tile instanceof TileGenericPipe) {
-            pipe2 = ((TileGenericPipe) tile).pipe;
-        }
+		if (equippedItem != null) {
 
-        if (BuildCraftTransport.alwaysConnectPipes) {
-            return super.isPipeConnected(tile);
-        }
-        else {
-            return (pipe2 == null || (!(pipe2.logic instanceof PipeLogicWood) && !(pipe2.logic instanceof PipeLogicAdvancedWood))) && super.isPipeConnected(tile);
-        }
-    }
+			if (equippedItem.getItem() == BuildCraftCore.wrenchItem) {
+				switchSource();
+				return true;
+			}
 
-    @Override
-    public void initialize () {
-        super.initialize();
+			if (mod_AdditionalPipes.isPipe(equippedItem.getItem())) {
+				return false;
+			}
+		}
 
-        switchSourceIfNeeded();
-    }
+		entityplayer.openGui(mod_AdditionalPipes.instance, NetworkID.GUI_PIPE_WOODEN_ADV, container.worldObj, container.xCoord, container.yCoord, container.zCoord);
 
-    private void switchSourceIfNeeded () {
-        int meta = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
+		return true;
+	}
 
-        if (meta > 5) {
-            switchSource();
-        }
-        else {
-            Position pos = new Position(xCoord, yCoord, zCoord,
-                                        Orientations.values()[meta]);
-            pos.moveForwards(1);
+	@Override
+	public boolean isPipeConnected(TileEntity tile) {
 
-            TileEntity tile = worldObj.getBlockTileEntity((int) pos.x, (int) pos.y,
-                              (int) pos.z);
+		Pipe pipe2 = null;
 
-            if (!isInput(tile)) {
-                switchSource();
-            }
-        }
-    }
+		if (tile instanceof TileGenericPipe) {
+			pipe2 = ((TileGenericPipe) tile).pipe;
+		}
 
+		if (BuildCraftTransport.alwaysConnectPipes) {
+			return super.isPipeConnected(tile);
+		}
+		else {
+			return (pipe2 == null || (!(pipe2.logic instanceof PipeLogicWood) && !(pipe2.logic instanceof PipeLogicAdvancedWood))) && super.isPipeConnected(tile);
+		}
+	}
 
-   public void onNeighborBlockChange () {
-        super.onNeighborBlockChange(xCoord);
+	@Override
+	public void initialize() {
 
-        switchSourceIfNeeded();
-    }
+		super.initialize();
 
-    @Override
-    public int getSizeInventory() {
-        return items.length;
-    }
+		switchSourceIfNeeded();
+	}
 
-    @Override
-    public ItemStack getStackInSlot(int i) {
-        return items [i];
-    }
+	private void switchSourceIfNeeded() {
 
-    @Override
-    public ItemStack decrStackSize(int i, int j) {
-        ItemStack stack = items [i].copy();
-        stack.stackSize = j;
+		int meta = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
 
-        items [i].stackSize -= j;
+		if (meta > 5) {
+			switchSource();
+		}
+		else {
+			Position pos = new Position(xCoord, yCoord, zCoord, Orientations.values()[meta]);
+			pos.moveForwards(1);
 
-        if (items [i].stackSize == 0) {
-            items [i] = null;
-        }
+			TileEntity tile = worldObj.getBlockTileEntity((int) pos.x, (int) pos.y, (int) pos.z);
 
-        return stack;
-    }
+			if (!isInput(tile)) {
+				switchSource();
+			}
+		}
+	}
 
-    @Override
-    public void setInventorySlotContents(int i, ItemStack itemstack) {
-        items [i] = itemstack;
+	public void onNeighborBlockChange() {
 
-    }
+		super.onNeighborBlockChange(xCoord);
 
-    @Override
-    public String getInvName() {
-        return "Filters";
-    }
+		switchSourceIfNeeded();
+	}
 
-    @Override
-    public int getInventoryStackLimit() {
-        return 1;
-    }
+	@Override
+	public int getSizeInventory() {
 
-    @Override
-    public void readFromNBT(NBTTagCompound nbttagcompound) {
-        super.readFromNBT(nbttagcompound);
-        exclude = nbttagcompound.getBoolean("exclude");
+		return items.length;
+	}
 
-        NBTTagList nbttaglist = nbttagcompound.getTagList("items");
+	@Override
+	public ItemStack getStackInSlot(int i) {
 
-        for (int j = 0; j < nbttaglist.tagCount(); ++j) {
-            NBTTagCompound nbttagcompound2 = (NBTTagCompound) nbttaglist.tagAt(j);
-            int index = nbttagcompound2.getInteger("index");
-            items [index] = ItemStack.loadItemStackFromNBT(nbttagcompound2);
-        }
-    }
+		return items[i];
+	}
 
-    @Override
-    public void writeToNBT(NBTTagCompound nbttagcompound) {
-        super.writeToNBT(nbttagcompound);
-        nbttagcompound.setBoolean("exclude", exclude);
+	@Override
+	public ItemStack decrStackSize(int i, int j) {
 
-        NBTTagList nbttaglist = new NBTTagList();
+		ItemStack stack = items[i].copy();
+		stack.stackSize = j;
 
-        for (int j = 0; j < items.length; ++j) {
-            if (items [j] != null && items [j].stackSize > 0) {
-                NBTTagCompound nbttagcompound2 = new NBTTagCompound ();
-                nbttaglist.appendTag(nbttagcompound2);
-                nbttagcompound2.setInteger("index", j);
-                items [j].writeToNBT(nbttagcompound2);
-            }
-        }
+		items[i].stackSize -= j;
 
-        nbttagcompound.setTag("items", nbttaglist);
-    }
+		if (items[i].stackSize == 0) {
+			items[i] = null;
+		}
+
+		return stack;
+	}
+
+	@Override
+	public void setInventorySlotContents(int i, ItemStack itemstack) {
+
+		items[i] = itemstack;
+
+	}
+
+	@Override
+	public String getInvName() {
+
+		return "Filters";
+	}
+
+	@Override
+	public int getInventoryStackLimit() {
+
+		return 1;
+	}
+
+	@Override
+	public void readFromNBT(NBTTagCompound nbttagcompound) {
+
+		super.readFromNBT(nbttagcompound);
+		exclude = nbttagcompound.getBoolean("exclude");
+
+		NBTTagList nbttaglist = nbttagcompound.getTagList("items");
+
+		for (int j = 0; j < nbttaglist.tagCount(); ++j) {
+			NBTTagCompound nbttagcompound2 = (NBTTagCompound) nbttaglist.tagAt(j);
+			int index = nbttagcompound2.getInteger("index");
+			items[index] = ItemStack.loadItemStackFromNBT(nbttagcompound2);
+		}
+	}
+
+	@Override
+	public void writeToNBT(NBTTagCompound nbttagcompound) {
+
+		super.writeToNBT(nbttagcompound);
+		nbttagcompound.setBoolean("exclude", exclude);
+
+		NBTTagList nbttaglist = new NBTTagList();
+
+		for (int j = 0; j < items.length; ++j) {
+			if (items[j] != null && items[j].stackSize > 0) {
+				NBTTagCompound nbttagcompound2 = new NBTTagCompound();
+				nbttaglist.appendTag(nbttagcompound2);
+				nbttagcompound2.setInteger("index", j);
+				items[j].writeToNBT(nbttagcompound2);
+			}
+		}
+
+		nbttagcompound.setTag("items", nbttaglist);
+	}
 
 }

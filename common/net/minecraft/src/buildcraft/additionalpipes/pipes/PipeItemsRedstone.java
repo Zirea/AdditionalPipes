@@ -27,110 +27,123 @@ import net.minecraft.src.buildcraft.transport.PipeTransportItems;
 
 public class PipeItemsRedstone extends Pipe implements IPipeTransportItemsHook, IPipeProvideRedstonePowerHook {
 
-    private @TileNetworkData int nextTexture = mod_AdditionalPipes.DEFUALT_RedStone_TEXTURE;
-    public @TileNetworkData boolean isPowering = false;
-    public PipeItemsRedstone(int itemID) {
-        super(new PipeTransportItems(), new PipeLogicStone (), itemID);
-    }
+	private @TileNetworkData
+	int nextTexture = mod_AdditionalPipes.DEFUALT_RedStone_TEXTURE;
+	public @TileNetworkData
+	boolean isPowering = false;
 
-    @Override
-    public void prepareTextureFor(Orientations connection) {
-        if (!isPowering) {
-            nextTexture = mod_AdditionalPipes.DEFUALT_RedStone_TEXTURE;
-        }
-        else {
-            nextTexture = mod_AdditionalPipes.DEFUALT_RedStone_TEXTURE_POWERED;
-        }
-    }
-    @Override
-    public int getMainBlockTexture() {
-        return nextTexture;
-    }
+	public PipeItemsRedstone(int itemID) {
 
-    @Override
-    public void readjustSpeed (EntityPassiveItem item) {
-        if (item.speed > Utils.pipeNormalSpeed) {
-            item.speed = item.speed - Utils.pipeNormalSpeed / 2.0F;
-        }
+		super(new PipeTransportItems(), new PipeLogicStone(), itemID);
+	}
 
-        if (item.speed < Utils.pipeNormalSpeed) {
-            item.speed = Utils.pipeNormalSpeed;
-        }
-    }
+	@Override
+	public void prepareTextureFor(Orientations connection) {
 
-    @Override
-    public LinkedList<Orientations> filterPossibleMovements(
-        LinkedList<Orientations> possibleOrientations, Position pos,
-        EntityPassiveItem item) {
-        return possibleOrientations;
-    }
+		if (!isPowering) {
+			nextTexture = mod_AdditionalPipes.DEFUALT_RedStone_TEXTURE;
+		}
+		else {
+			nextTexture = mod_AdditionalPipes.DEFUALT_RedStone_TEXTURE_POWERED;
+		}
+	}
 
-    @Override
-    public void entityEntered(EntityPassiveItem item, Orientations orientation) {
-    }
+	@Override
+	public int getMainBlockTexture() {
 
-    @Override
-    public void updateEntity() {
-        super.updateEntity();
+		return nextTexture;
+	}
 
-        if ( ((PipeTransportItems)this.transport).travelingEntities.size() == 0 && isPowering) {
-            isPowering = false;
-            UpdateTiles(this.container.xCoord, this.container.yCoord, this.container.zCoord);
-        }
-        else if ( ((PipeTransportItems)this.transport).travelingEntities.size() > 0 && !isPowering) {
-            isPowering = true;
-            UpdateTiles(this.container.xCoord, this.container.yCoord, this.container.zCoord);
-        }
-    }
+	@Override
+	public void readjustSpeed(EntityPassiveItem item) {
 
-    private void UpdateTiles(int i, int j, int k) {
-        worldObj.notifyBlocksOfNeighborChange(i, j, k, BuildCraftTransport.genericPipeBlock.blockID);
-    }
+		if (item.speed > Utils.pipeNormalSpeed) {
+			item.speed = item.speed - Utils.pipeNormalSpeed / 2.0F;
+		}
 
-    @Override
-    public boolean isPoweringTo(int l) {
-        //System.out.println("RedStoneIsPoweringTo");
-        if (((PipeTransportItems)this.transport).travelingEntities.size() == 0) {
-            isPowering = false;
-            return false;
-        }
+		if (item.speed < Utils.pipeNormalSpeed) {
+			item.speed = Utils.pipeNormalSpeed;
+		}
+	}
 
-        isPowering = true;
-        int i1 = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
+	@Override
+	public LinkedList<Orientations> filterPossibleMovements(LinkedList<Orientations> possibleOrientations, Position pos, EntityPassiveItem item) {
 
-        if(i1 == 5 && l == 1) {
-            return false;
-        }
+		return possibleOrientations;
+	}
 
-        if(i1 == 3 && l == 3) {
-            return false;
-        }
+	@Override
+	public void entityEntered(EntityPassiveItem item, Orientations orientation) {
 
-        if(i1 == 4 && l == 2) {
-            return false;
-        }
+	}
 
-        if(i1 == 1 && l == 5) {
-            return false;
-        }
+	@Override
+	public void updateEntity() {
 
-        return i1 != 2 || l != 4;
-    }
+		super.updateEntity();
 
-    @Override
-    public boolean isIndirectlyPoweringTo(int l) {
-        return isPoweringTo(l);
-    }
+		if (((PipeTransportItems) this.transport).travelingEntities.size() == 0 && isPowering) {
+			isPowering = false;
+			UpdateTiles(this.container.xCoord, this.container.yCoord, this.container.zCoord);
+		}
+		else if (((PipeTransportItems) this.transport).travelingEntities.size() > 0 && !isPowering) {
+			isPowering = true;
+			UpdateTiles(this.container.xCoord, this.container.yCoord, this.container.zCoord);
+		}
+	}
 
-    @Override
-    public boolean isPoweringTo(IBlockAccess iblockaccess, int i, int j, int k,
-                                int l) {
-        return isPoweringTo(l);
-    }
+	private void UpdateTiles(int i, int j, int k) {
 
-    @Override
-    public boolean isIndirectlyPoweringTo(World world, int i, int j, int k, int l) {
-        return isIndirectlyPoweringTo(l);
-    }
+		worldObj.notifyBlocksOfNeighborChange(i, j, k, BuildCraftTransport.genericPipeBlock.blockID);
+	}
+
+	@Override
+	public boolean isPoweringTo(int l) {
+
+		// System.out.println("RedStoneIsPoweringTo");
+		if (((PipeTransportItems) this.transport).travelingEntities.size() == 0) {
+			isPowering = false;
+			return false;
+		}
+
+		isPowering = true;
+		int i1 = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
+
+		if (i1 == 5 && l == 1) {
+			return false;
+		}
+
+		if (i1 == 3 && l == 3) {
+			return false;
+		}
+
+		if (i1 == 4 && l == 2) {
+			return false;
+		}
+
+		if (i1 == 1 && l == 5) {
+			return false;
+		}
+
+		return i1 != 2 || l != 4;
+	}
+
+	@Override
+	public boolean isIndirectlyPoweringTo(int l) {
+
+		return isPoweringTo(l);
+	}
+
+	@Override
+	public boolean isPoweringTo(IBlockAccess iblockaccess, int i, int j, int k, int l) {
+
+		return isPoweringTo(l);
+	}
+
+	@Override
+	public boolean isIndirectlyPoweringTo(World world, int i, int j, int k, int l) {
+
+		return isIndirectlyPoweringTo(l);
+	}
 
 }

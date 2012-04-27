@@ -13,76 +13,77 @@ import net.minecraft.src.buildcraft.transport.PipeTransport;
 public abstract class PipeTeleport extends Pipe {
 
 	public final PipeLogicTeleport logic;
-	
+
 	public static List<PipeTeleport> teleportPipes = new LinkedList<PipeTeleport>();
-	
+
 	public PipeTeleport(PipeTransport transport, PipeLogicTeleport logic, int itemID) {
-		
+
 		super(transport, logic, itemID);
 		this.logic = logic;
 	}
-	
+
 	@Override
 	public void updateEntity() {
-		
+
 		super.updateEntity();
-		
+
 		if (!teleportPipes.contains(this)) {
 			teleportPipes.add(this);
 		}
 	}
-	
+
 	public List<PipeTeleport> getConnectedPipes(boolean ignoreReceive) {
-		
+
 		List<PipeTeleport> temp = new LinkedList<PipeTeleport>();
-        removeOldPipes();
-        
-        PipeLogicTeleport logic = this.logic;
+		removeOldPipes();
 
-        for (PipeTeleport pipe : teleportPipes) {
-        	
-        	if (!this.getClass().equals(pipe.getClass())) {
-        		continue;
-        	}
-        	
-        	PipeLogicTeleport pipeLogic = pipe.logic;
-        	
-    		if (pipeLogic.owner.equalsIgnoreCase(logic.owner) || MutiPlayerProxy.isOnServer() == false) {
-            	
-                if (pipeLogic.canReceive || ignoreReceive) {
-                	
-                    if (pipeLogic.freq == logic.freq) {
-                    	
-                        if (xCoord != pipe.xCoord || yCoord != pipe.yCoord || zCoord != pipe.zCoord ) {
-                        	
-                             temp.add(pipe);
-                        }
-                    }
-                }
-            }
-        }
+		PipeLogicTeleport logic = this.logic;
 
-        return temp;
+		for (PipeTeleport pipe : teleportPipes) {
+
+			if (!this.getClass().equals(pipe.getClass())) {
+				continue;
+			}
+
+			PipeLogicTeleport pipeLogic = pipe.logic;
+
+			if (pipeLogic.owner.equalsIgnoreCase(logic.owner) || MutiPlayerProxy.isOnServer() == false) {
+
+				if (pipeLogic.canReceive || ignoreReceive) {
+
+					if (pipeLogic.freq == logic.freq) {
+
+						if (xCoord != pipe.xCoord || yCoord != pipe.yCoord || zCoord != pipe.zCoord) {
+
+							temp.add(pipe);
+						}
+					}
+				}
+			}
+		}
+
+		return temp;
 	}
-	
+
 	public void removeOldPipes() {
-		
-        LinkedList <PipeTeleport> toRemove = new LinkedList <PipeTeleport> ();
 
-        for (PipeTeleport pipe : teleportPipes) {
-        	
-        	if (!BlockGenericPipe.isValid(pipe) || !worldObj.blockExists(pipe.xCoord, pipe.yCoord, pipe.zCoord)) {
-        		toRemove.add(pipe);
-        		worldObj.removeBlockTileEntity(pipe.xCoord, pipe.yCoord, pipe.zCoord);
-        	}
-        }
+		LinkedList<PipeTeleport> toRemove = new LinkedList<PipeTeleport>();
 
-        teleportPipes.removeAll(toRemove);
-    }
-	
+		for (PipeTeleport pipe : teleportPipes) {
+
+			if (!BlockGenericPipe.isValid(pipe) || !worldObj.blockExists(pipe.xCoord, pipe.yCoord, pipe.zCoord)) {
+				toRemove.add(pipe);
+				worldObj.removeBlockTileEntity(pipe.xCoord, pipe.yCoord, pipe.zCoord);
+			}
+		}
+
+		teleportPipes.removeAll(toRemove);
+	}
+
 	public Position getPosition() {
+
 		return new Position(xCoord, yCoord, zCoord);
 	}
-	
+
 	public abstract FrequencyMap getFrequencyMap();
 }

@@ -17,76 +17,78 @@ import org.lwjgl.opengl.GL11;
 
 public class GuiAdvancedWoodPipe extends GuiContainer {
 
-    int inventoryRows = 1;
-    IInventory playerInventory;
-    IInventory filterInventory;
-    TileGenericPipe container;
-    private GuiButton[] buttons = new GuiButton[1];
+	int inventoryRows = 1;
+	IInventory playerInventory;
+	IInventory filterInventory;
+	TileGenericPipe container;
+	private GuiButton[] buttons = new GuiButton[1];
 
-    public GuiAdvancedWoodPipe(IInventory playerInventorys, IInventory filterInventorys, TileGenericPipe container) {
-    	
-        super(new CraftingAdvancedWoodPipe(playerInventorys, filterInventorys));
-        this.playerInventory = playerInventorys;
-        this.filterInventory = filterInventorys;
-        this.container = container;
-        //container = theContainer;
-        xSize = 175;
-        ySize = 156;
+	public GuiAdvancedWoodPipe(IInventory playerInventorys, IInventory filterInventorys, TileGenericPipe container) {
 
-    }
-    @Override
-	@SuppressWarnings("unchecked")
-    public void initGui() {
-        super.initGui();
-        int guiX = (width - this.xSize) / 2;
-        int guiY = (height - this.ySize) / 2;
-        controlList.add(this.buttons[0] =  new GuiButton(1, guiX + 8, guiY + 40, 140, 20, "These items are required"));
-    }
+		super(new CraftingAdvancedWoodPipe(playerInventorys, filterInventorys));
+		this.playerInventory = playerInventorys;
+		this.filterInventory = filterInventorys;
+		this.container = container;
+		// container = theContainer;
+		xSize = 175;
+		ySize = 156;
 
-    @Override
+	}
+
+	@Override
+	public void initGui() {
+
+		super.initGui();
+		int guiX = (width - this.xSize) / 2;
+		int guiY = (height - this.ySize) / 2;
+		controlList.add(this.buttons[0] = new GuiButton(1, guiX + 8, guiY + 40, 140, 20, "These items are required"));
+	}
+
+	@Override
 	protected void drawGuiContainerForegroundLayer() {
-        if (((PipeLogicAdvancedWood)container.pipe.logic).exclude) {
-            this.buttons[0].displayString = "These items are excluded";
-        }
-        else {
-            this.buttons[0].displayString = "These items are required";
-        }
 
-        fontRenderer.drawString(filterInventory.getInvName(), 8, 6, 0x404040);
-        fontRenderer.drawString(playerInventory.getInvName(), 8, 66, 0x404040);
-    }
-    @Override
+		if (((PipeLogicAdvancedWood) container.pipe.logic).exclude) {
+			this.buttons[0].displayString = "These items are excluded";
+		}
+		else {
+			this.buttons[0].displayString = "These items are required";
+		}
+
+		fontRenderer.drawString(filterInventory.getInvName(), 8, 6, 0x404040);
+		fontRenderer.drawString(playerInventory.getInvName(), 8, 66, 0x404040);
+	}
+
+	@Override
 	protected void actionPerformed(GuiButton guibutton) {
-    	
-        if (guibutton.id == 1) {
-            ((PipeLogicAdvancedWood)container.pipe.logic).exclude = !((PipeLogicAdvancedWood)container.pipe.logic).exclude;
-        }
-        
-        /*if (mc.theWorld.isRemote) {
-        	
-        	PacketPayload payload = container.pipe.getNetworkPacket();
 
-    		PacketAdditionalPipes packet = new PacketAdditionalPipes(NetworkID.PACKET_PIPE_DESC, payload);
-    		packet.posX = container.pipe.xCoord;
-    		packet.posY = container.pipe.yCoord;
-    		packet.posZ = container.pipe.zCoord;      
-      
-            ModLoader.getMinecraftInstance().getSendQueue().addToSendQueue(packet.getPacket());
-        }*/
-    }
+		if (guibutton.id == 1) {
+			((PipeLogicAdvancedWood) container.pipe.logic).exclude = !((PipeLogicAdvancedWood) container.pipe.logic).exclude;
+		}
 
-    @Override
-    protected void drawGuiContainerBackgroundLayer(float f, int i, int j) {
-        int i1 = mc.renderEngine
-                 .getTexture("/net/minecraft/src/buildcraft/additionalpipes/resources/advancedwoodgui.png");
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        mc.renderEngine.bindTexture(i1);
-        int j1 = (width - xSize) / 2;
-        int k = (height - ySize) / 2;
-        drawTexturedModalRect(j1, k, 0, 0, xSize, ySize);
-    }
+		/*
+		 * if (mc.theWorld.isRemote) {
+		 * 
+		 * PacketPayload payload = container.pipe.getNetworkPacket();
+		 * 
+		 * PacketAdditionalPipes packet = new
+		 * PacketAdditionalPipes(NetworkID.PACKET_PIPE_DESC, payload);
+		 * packet.posX = container.pipe.xCoord; packet.posY =
+		 * container.pipe.yCoord; packet.posZ = container.pipe.zCoord;
+		 * 
+		 * ModLoader.getMinecraftInstance().getSendQueue().addToSendQueue(packet.
+		 * getPacket()); }
+		 */
+	}
 
+	@Override
+	protected void drawGuiContainerBackgroundLayer(float f, int i, int j) {
 
-
+		int i1 = mc.renderEngine.getTexture("/net/minecraft/src/buildcraft/additionalpipes/resources/advancedwoodgui.png");
+		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+		mc.renderEngine.bindTexture(i1);
+		int j1 = (width - xSize) / 2;
+		int k = (height - ySize) / 2;
+		drawTexturedModalRect(j1, k, 0, 0, xSize, ySize);
+	}
 
 }

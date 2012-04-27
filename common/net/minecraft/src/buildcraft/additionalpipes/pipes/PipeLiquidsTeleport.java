@@ -26,102 +26,108 @@ import net.minecraft.src.buildcraft.additionalpipes.util.FrequencyMap;
 
 public class PipeLiquidsTeleport extends PipeTeleport implements IPipeTransportLiquidsHook {
 
-    class OilReturn {
-        public Orientations theOrientation;
-        public ILiquidContainer iliquid;
-        public OilReturn(Orientations a, ILiquidContainer b) {
-            theOrientation = a;
-            iliquid = b;
-        }
-    }
-    
-    public static FrequencyMap freqencyMap = new FrequencyMap();
+	class OilReturn {
 
-    public PipeLiquidsTeleport(int itemID) {
-        super(new PipeTransportLiquids(), new PipeLogicTeleport(NetworkID.GUI_PIPE_TP), itemID);
-        
-        ((PipeTransportLiquids) transport).flowRate = 80;
+		public Orientations theOrientation;
+		public ILiquidContainer iliquid;
+
+		public OilReturn(Orientations a, ILiquidContainer b) {
+
+			theOrientation = a;
+			iliquid = b;
+		}
+	}
+
+	public static FrequencyMap freqencyMap = new FrequencyMap();
+
+	public PipeLiquidsTeleport(int itemID) {
+
+		super(new PipeTransportLiquids(), new PipeLogicTeleport(NetworkID.GUI_PIPE_TP), itemID);
+
+		((PipeTransportLiquids) transport).flowRate = 80;
 		((PipeTransportLiquids) transport).travelDelay = 2;
-    }
-    
-    @Override
-    public int getMainBlockTexture() {
-        return mod_AdditionalPipes.DEFUALT_LIQUID_TELEPORT_TEXTURE;
-    }
+	}
 
-    @Override
-    public int fill(Orientations from, int quantity, int id, boolean doFill) {
-    	
-        List<PipeTeleport> pipeList = getConnectedPipes(false);
+	@Override
+	public int getMainBlockTexture() {
 
-        if (pipeList.size() == 0) {
-            return 0;
-        }
+		return mod_AdditionalPipes.DEFUALT_LIQUID_TELEPORT_TEXTURE;
+	}
 
-        //System.out.println("PipeList Size: " + pipeList.size());
-        int i = worldObj.rand.nextInt(pipeList.size());
-        LinkedList<OilReturn> theList = getPossibleLiquidMovements(pipeList.get(i).getPosition());
+	@Override
+	public int fill(Orientations from, int quantity, int id, boolean doFill) {
 
-        if (theList.size() <= 0) {
-            return 0;
-        }
+		List<PipeTeleport> pipeList = getConnectedPipes(false);
 
-        //System.out.println("theList Size: " + theList.size());
-        int used = 0;
-        int a = 0;
+		if (pipeList.size() == 0) {
+			return 0;
+		}
 
-        while (theList.size() > 0 && used <= 0) {
-            a = worldObj.rand.nextInt(theList.size());
-            //System.out.println("A: " + a);
-            used = theList.get(a).iliquid.fill(theList.get(a).theOrientation.reverse(), quantity, id, doFill);
-            theList.remove(a);
-        }
+		// System.out.println("PipeList Size: " + pipeList.size());
+		int i = worldObj.rand.nextInt(pipeList.size());
+		LinkedList<OilReturn> theList = getPossibleLiquidMovements(pipeList.get(i).getPosition());
 
-        //System.out.println("Fill " + used);
-        return used;
+		if (theList.size() <= 0) {
+			return 0;
+		}
 
-    }
+		// System.out.println("theList Size: " + theList.size());
+		int used = 0;
+		int a = 0;
 
-    public LinkedList<OilReturn> getPossibleLiquidMovements(Position pos) {
-    	
-        LinkedList<OilReturn> result = new LinkedList<OilReturn>();
+		while (theList.size() > 0 && used <= 0) {
+			a = worldObj.rand.nextInt(theList.size());
+			// System.out.println("A: " + a);
+			used = theList.get(a).iliquid.fill(theList.get(a).theOrientation.reverse(), quantity, id, doFill);
+			theList.remove(a);
+		}
 
-        for (int o = 0; o <= 5; ++o) {
-            Position newPos = new Position(pos);
-            newPos.orientation = Orientations.values()[o];
-            newPos.moveForwards(1.0);
+		// System.out.println("Fill " + used);
+		return used;
 
-            if (canReceiveLiquid2(newPos)) {
-               result.add(new OilReturn(Orientations.values()[o], (ILiquidContainer) Utils.getTile(worldObj, newPos, Orientations.Unknown)));
-            }
-        }
+	}
 
-        return result;
-    }
-    
-    public boolean canReceiveLiquid2(Position p) {
-    	
-        TileEntity entity = worldObj.getBlockTileEntity((int) p.x, (int) p.y,
-                            (int) p.z);
+	public LinkedList<OilReturn> getPossibleLiquidMovements(Position pos) {
 
-        if (entity == null) {
-        	return false;
-        }
-        
-        if (entity instanceof IPipeEntry || entity instanceof ILiquidContainer) {
-            return true;
-        }
+		LinkedList<OilReturn> result = new LinkedList<OilReturn>();
 
-        return false;
-    }
-    
-    @Override
+		for (int o = 0; o <= 5; ++o) {
+			Position newPos = new Position(pos);
+			newPos.orientation = Orientations.values()[o];
+			newPos.moveForwards(1.0);
+
+			if (canReceiveLiquid2(newPos)) {
+				result.add(new OilReturn(Orientations.values()[o], (ILiquidContainer) Utils.getTile(worldObj, newPos, Orientations.Unknown)));
+			}
+		}
+
+		return result;
+	}
+
+	public boolean canReceiveLiquid2(Position p) {
+
+		TileEntity entity = worldObj.getBlockTileEntity((int) p.x, (int) p.y, (int) p.z);
+
+		if (entity == null) {
+			return false;
+		}
+
+		if (entity instanceof IPipeEntry || entity instanceof ILiquidContainer) {
+			return true;
+		}
+
+		return false;
+	}
+
+	@Override
 	public Position getPosition() {
-        return new Position (xCoord, yCoord, zCoord);
-    }
-    
-    @Override
+
+		return new Position(xCoord, yCoord, zCoord);
+	}
+
+	@Override
 	public FrequencyMap getFrequencyMap() {
+
 		return freqencyMap;
 	}
 

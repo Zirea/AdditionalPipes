@@ -20,149 +20,152 @@ import net.minecraft.src.buildcraft.transport.TileGenericPipe;
 import net.minecraft.src.*;
 
 public class PipeLogicDistributor extends PipeLogic {
-	
+
 	@TileNetworkData
 	public int nextTexture = mod_AdditionalPipes.DEFUALT_DISTRIBUTOR_TEXTURE_0;
-	
-    @TileNetworkData (staticSize = 6)
-    public int distData[] = {1, 1, 1, 1, 1, 1};
-    
-    @TileNetworkData
-    public int curTick = 0;
 
-    public void switchPosition() {
-    	
-        int metadata = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
+	@TileNetworkData(staticSize = 6)
+	public int distData[] = { 1, 1, 1, 1, 1, 1 };
 
-        int nextMetadata = metadata;
+	@TileNetworkData
+	public int curTick = 0;
 
-        for (int l = 0; l < 6; ++l) {
-            nextMetadata ++;
+	public void switchPosition() {
 
-            if (nextMetadata > 5) {
-                nextMetadata = 0;
-            }
+		int metadata = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
 
-            Position pos = new Position(xCoord, yCoord, zCoord, Orientations.values()[nextMetadata]);
-            pos.moveForwards(1.0);
+		int nextMetadata = metadata;
 
-            TileEntity tile = worldObj.getBlockTileEntity((int) pos.x, (int) pos.y, (int) pos.z);
+		for (int l = 0; l < 6; ++l) {
+			nextMetadata++;
 
-            if (tile instanceof TileGenericPipe) {
-                if (((TileGenericPipe) tile).pipe.logic instanceof PipeLogicWood || ((TileGenericPipe) tile).pipe.logic instanceof PipeLogicAdvancedWood) {
-                    continue;
-                }
-            }
+			if (nextMetadata > 5) {
+				nextMetadata = 0;
+			}
 
-            if (tile instanceof IPipeEntry || tile instanceof IInventory || tile instanceof ILiquidContainer || tile instanceof TileGenericPipe) {
-                if (distData[nextMetadata] > 0) {
-                    worldObj.setBlockMetadata(xCoord, yCoord, zCoord, nextMetadata);
-                    return;
-                }
-            }
-        }
-    }
-    public void switchIfNeeded() {
-        int metadata = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
+			Position pos = new Position(xCoord, yCoord, zCoord, Orientations.values()[nextMetadata]);
+			pos.moveForwards(1.0);
 
-        int nextMetadata = metadata;
+			TileEntity tile = worldObj.getBlockTileEntity((int) pos.x, (int) pos.y, (int) pos.z);
 
-        for (int l = 0; l < 6; ++l) {
-            if (nextMetadata > 5) {
-                nextMetadata = 0;
-            }
+			if (tile instanceof TileGenericPipe) {
+				if (((TileGenericPipe) tile).pipe.logic instanceof PipeLogicWood || ((TileGenericPipe) tile).pipe.logic instanceof PipeLogicAdvancedWood) {
+					continue;
+				}
+			}
 
-            Position pos = new Position(xCoord, yCoord, zCoord, Orientations.values()[nextMetadata]);
-            pos.moveForwards(1.0);
+			if (tile instanceof IPipeEntry || tile instanceof IInventory || tile instanceof ILiquidContainer || tile instanceof TileGenericPipe) {
+				if (distData[nextMetadata] > 0) {
+					worldObj.setBlockMetadata(xCoord, yCoord, zCoord, nextMetadata);
+					return;
+				}
+			}
+		}
+	}
 
-            TileEntity tile = worldObj.getBlockTileEntity((int) pos.x, (int) pos.y, (int) pos.z);
+	public void switchIfNeeded() {
 
-            if (tile instanceof TileGenericPipe) {
-                if (((TileGenericPipe) tile).pipe.logic instanceof PipeLogicWood || ((TileGenericPipe) tile).pipe.logic instanceof PipeLogicAdvancedWood) {
-                    continue;
-                }
-            }
+		int metadata = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
 
-            if (tile instanceof IPipeEntry || tile instanceof IInventory || tile instanceof ILiquidContainer || tile instanceof TileGenericPipe) {
-                if (distData[nextMetadata] > 0) {
-                    worldObj.setBlockMetadata(xCoord, yCoord, zCoord, nextMetadata);
-                    return;
-                }
-            }
+		int nextMetadata = metadata;
 
-            nextMetadata ++;
-        }
-    }
+		for (int l = 0; l < 6; ++l) {
+			if (nextMetadata > 5) {
+				nextMetadata = 0;
+			}
 
+			Position pos = new Position(xCoord, yCoord, zCoord, Orientations.values()[nextMetadata]);
+			pos.moveForwards(1.0);
 
-    @Override
-    public void onBlockPlaced() {
-        super.onBlockPlaced();
+			TileEntity tile = worldObj.getBlockTileEntity((int) pos.x, (int) pos.y, (int) pos.z);
 
-        worldObj.setBlockMetadata(xCoord, yCoord, zCoord, 1);
-        switchPosition();
-    }
+			if (tile instanceof TileGenericPipe) {
+				if (((TileGenericPipe) tile).pipe.logic instanceof PipeLogicWood || ((TileGenericPipe) tile).pipe.logic instanceof PipeLogicAdvancedWood) {
+					continue;
+				}
+			}
 
-    @Override
-    public boolean blockActivated(EntityPlayer entityplayer) {
+			if (tile instanceof IPipeEntry || tile instanceof IInventory || tile instanceof ILiquidContainer || tile instanceof TileGenericPipe) {
+				if (distData[nextMetadata] > 0) {
+					worldObj.setBlockMetadata(xCoord, yCoord, zCoord, nextMetadata);
+					return;
+				}
+			}
 
-        ItemStack equippedItem = entityplayer.getCurrentEquippedItem();
-        
-        if (equippedItem != null) {
-            
-            if (equippedItem.getItem() == BuildCraftCore.wrenchItem) {
+			nextMetadata++;
+		}
+	}
 
-                switchPosition();
-                worldObj.markBlockNeedsUpdate(xCoord, yCoord, zCoord);
+	@Override
+	public void onBlockPlaced() {
 
-                return true;
-            }
+		super.onBlockPlaced();
 
-            if (mod_AdditionalPipes.isPipe(equippedItem.getItem())) {
-                return false;
-            }
-        }
-        
-        entityplayer.openGui(mod_AdditionalPipes.instance, NetworkID.GUI_PIPE_DIST, 
-                container.worldObj, container.xCoord, container.yCoord, container.zCoord);
+		worldObj.setBlockMetadata(xCoord, yCoord, zCoord, 1);
+		switchPosition();
+	}
 
-        return true;
-    }
+	@Override
+	public boolean blockActivated(EntityPlayer entityplayer) {
 
-    @Override
-    public boolean outputOpen(Orientations to) {
-        return to.ordinal() == worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
-    }
-    
-    @Override
-    public void writeToNBT(NBTTagCompound nbt) {
-    
-    	super.writeToNBT(nbt);
+		ItemStack equippedItem = entityplayer.getCurrentEquippedItem();
 
-    	nbt.setInteger("curTick", curTick);
+		if (equippedItem != null) {
+
+			if (equippedItem.getItem() == BuildCraftCore.wrenchItem) {
+
+				switchPosition();
+				worldObj.markBlockNeedsUpdate(xCoord, yCoord, zCoord);
+
+				return true;
+			}
+
+			if (mod_AdditionalPipes.isPipe(equippedItem.getItem())) {
+				return false;
+			}
+		}
+
+		entityplayer.openGui(mod_AdditionalPipes.instance, NetworkID.GUI_PIPE_DIST, container.worldObj, container.xCoord, container.yCoord, container.zCoord);
+
+		return true;
+	}
+
+	@Override
+	public boolean outputOpen(Orientations to) {
+
+		return to.ordinal() == worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
+	}
+
+	@Override
+	public void writeToNBT(NBTTagCompound nbt) {
+
+		super.writeToNBT(nbt);
+
+		nbt.setInteger("curTick", curTick);
 		for (int i = 0; i < distData.length; i++) {
 			nbt.setInteger("distData" + i, distData[i]);
 		}
-    }
-    
-    @Override
-    public void readFromNBT(NBTTagCompound nbt) {
-    
-    	super.readFromNBT(nbt);
-    	curTick = nbt.getInteger("curTick");
-	
-    	boolean found = false;
-    	for (int i = 0; i < distData.length; i++) {
-    		int d = nbt.getInteger("distData" + i);
-    		if (d > 0) found = true;
-    			distData[i] = d;
-    	}
+	}
 
-    	if (!found) {
-    		for (int i = 0; i < distData.length; i++) {
-    			distData[i] = 1;
-    		}
-    	}
-    }
+	@Override
+	public void readFromNBT(NBTTagCompound nbt) {
+
+		super.readFromNBT(nbt);
+		curTick = nbt.getInteger("curTick");
+
+		boolean found = false;
+		for (int i = 0; i < distData.length; i++) {
+			int d = nbt.getInteger("distData" + i);
+			if (d > 0)
+				found = true;
+			distData[i] = d;
+		}
+
+		if (!found) {
+			for (int i = 0; i < distData.length; i++) {
+				distData[i] = 1;
+			}
+		}
+	}
 
 }

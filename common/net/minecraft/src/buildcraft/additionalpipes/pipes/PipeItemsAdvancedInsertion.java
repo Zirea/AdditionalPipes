@@ -27,86 +27,94 @@ import net.minecraft.src.buildcraft.transport.PipeTransportItems;
 
 public class PipeItemsAdvancedInsertion extends Pipe implements IPipeTransportItemsHook {
 
-    public PipeItemsAdvancedInsertion(int itemID) {
-        super(new PipeTransportItems(), new PipeLogicStone (), itemID);
+	public PipeItemsAdvancedInsertion(int itemID) {
 
-    }
+		super(new PipeTransportItems(), new PipeLogicStone(), itemID);
 
-    @Override
-    public int getMainBlockTexture() {
-        return mod_AdditionalPipes.DEFUALT_Insertion_TEXTURE;
-    }
+	}
 
-    @Override
-    public void readjustSpeed (EntityPassiveItem item) {
-        if (item.speed > Utils.pipeNormalSpeed) {
-            item.speed = item.speed - Utils.pipeNormalSpeed / 2.0F;
-        }
+	@Override
+	public int getMainBlockTexture() {
 
-        if (item.speed < Utils.pipeNormalSpeed) {
-            item.speed = Utils.pipeNormalSpeed;
-        }
-    }
-    @Override
-    public LinkedList<Orientations> filterPossibleMovements(LinkedList<Orientations> possibleOrientations, Position pos, EntityPassiveItem item) {
-        return filterPossibleMovements(possibleOrientations, pos, item, 0);
-    }
+		return mod_AdditionalPipes.DEFUALT_Insertion_TEXTURE;
+	}
 
-    public LinkedList<Orientations> filterPossibleMovements(LinkedList<Orientations> possibleOrientations, Position pos, EntityPassiveItem item, int Level) {
-        LinkedList<Orientations> newOris = new LinkedList<Orientations>();
-        LinkedList<Orientations> nullReturn = new LinkedList<Orientations>();
-        nullReturn.add(Orientations.values()[0]);
+	@Override
+	public void readjustSpeed(EntityPassiveItem item) {
 
-        for (int o = 0; o < 6; ++o) {
-            if (Orientations.values()[o] != pos.orientation.reverse()) {
-                Position newPos = new Position(pos);
-                newPos.orientation = Orientations.values()[o];
-                newPos.moveForwards(1.0);
+		if (item.speed > Utils.pipeNormalSpeed) {
+			item.speed = item.speed - Utils.pipeNormalSpeed / 2.0F;
+		}
 
-                TileEntity entity = worldObj.getBlockTileEntity((int) newPos.x, (int) newPos.y, (int) newPos.z);
+		if (item.speed < Utils.pipeNormalSpeed) {
+			item.speed = Utils.pipeNormalSpeed;
+		}
+	}
 
-                if (entity instanceof IInventory) {
-                    if (new StackUtil(item.item).checkAvailableSlot((IInventory) entity, false, newPos.orientation.reverse())) {
-                        newOris.add(newPos.orientation);
-                    }
-                }
-            }
-        }
+	@Override
+	public LinkedList<Orientations> filterPossibleMovements(LinkedList<Orientations> possibleOrientations, Position pos, EntityPassiveItem item) {
 
+		return filterPossibleMovements(possibleOrientations, pos, item, 0);
+	}
 
-        //System.out.println("NewOris Size: " + newOris.size() + " - PO Size: " + possibleOrientations.size() + " - Level: " + Level);
-        if (newOris.size() > 0) {
-            Position destPos =  new Position(pos.x, pos.y, pos.z, newOris.get( (new Random()) .nextInt(newOris.size()) ) );
-            destPos.moveForwards(1.0);
-            StackUtil utils = new StackUtil(item.item);
-            TileEntity tile = worldObj.getBlockTileEntity((int) destPos.x, (int) destPos.y, (int) destPos.z);
+	public LinkedList<Orientations> filterPossibleMovements(LinkedList<Orientations> possibleOrientations, Position pos, EntityPassiveItem item, int Level) {
 
-            if (!APIProxy.isClient(worldObj)) {
-                if (utils.checkAvailableSlot((IInventory) tile, true, destPos.orientation.reverse()) && utils.items.stackSize == 0) {
-                    item.remove();
-                    ((PipeTransportItems) this.transport).scheduleRemoval(item);
-                }
-                else {
-                    item.item = utils.items;
-                    return this.filterPossibleMovements(possibleOrientations, pos, item, (Level + 1));
-                    //EntityItem dropped = item.toEntityItem(destPos.orientation);
-                }
-            }
+		LinkedList<Orientations> newOris = new LinkedList<Orientations>();
+		LinkedList<Orientations> nullReturn = new LinkedList<Orientations>();
+		nullReturn.add(Orientations.values()[0]);
 
-            //System.out.println("Insertion Output 2 : " + destPos.orientation);
-            return nullReturn;
-        }
+		for (int o = 0; o < 6; ++o) {
+			if (Orientations.values()[o] != pos.orientation.reverse()) {
+				Position newPos = new Position(pos);
+				newPos.orientation = Orientations.values()[o];
+				newPos.moveForwards(1.0);
 
-        if (Level == 0) {
-            return possibleOrientations;
-        }
+				TileEntity entity = worldObj.getBlockTileEntity((int) newPos.x, (int) newPos.y, (int) newPos.z);
 
-        return ((PipeTransportItems)this.transport).getPossibleMovements(pos, item);
-    }
+				if (entity instanceof IInventory) {
+					if (new StackUtil(item.item).checkAvailableSlot((IInventory) entity, false, newPos.orientation.reverse())) {
+						newOris.add(newPos.orientation);
+					}
+				}
+			}
+		}
 
-    @Override
-    public void entityEntered(EntityPassiveItem item, Orientations orientation) {
+		// System.out.println("NewOris Size: " + newOris.size() + " - PO Size: "
+		// + possibleOrientations.size() + " - Level: " + Level);
+		if (newOris.size() > 0) {
+			Position destPos = new Position(pos.x, pos.y, pos.z, newOris.get((new Random()).nextInt(newOris.size())));
+			destPos.moveForwards(1.0);
+			StackUtil utils = new StackUtil(item.item);
+			TileEntity tile = worldObj.getBlockTileEntity((int) destPos.x, (int) destPos.y, (int) destPos.z);
 
-    }
+			if (!APIProxy.isClient(worldObj)) {
+				if (utils.checkAvailableSlot((IInventory) tile, true, destPos.orientation.reverse()) && utils.items.stackSize == 0) {
+					item.remove();
+					((PipeTransportItems) this.transport).scheduleRemoval(item);
+				}
+				else {
+					item.item = utils.items;
+					return this.filterPossibleMovements(possibleOrientations, pos, item, (Level + 1));
+					// EntityItem dropped =
+					// item.toEntityItem(destPos.orientation);
+				}
+			}
+
+			// System.out.println("Insertion Output 2 : " +
+			// destPos.orientation);
+			return nullReturn;
+		}
+
+		if (Level == 0) {
+			return possibleOrientations;
+		}
+
+		return ((PipeTransportItems) this.transport).getPossibleMovements(pos, item);
+	}
+
+	@Override
+	public void entityEntered(EntityPassiveItem item, Orientations orientation) {
+
+	}
 
 }

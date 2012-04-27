@@ -17,21 +17,21 @@ import net.minecraft.src.buildcraft.transport.TileGenericPipe;
 
 public class PipeLogicAdvancedInsertion extends PipeLogic {
 
-    @Override
-    public boolean isPipeConnected(TileEntity tile) {
-        Pipe pipe2 = null;
+	@Override
+	public boolean isPipeConnected(TileEntity tile) {
 
-        if (tile instanceof TileGenericPipe) {
-            pipe2 = ((TileGenericPipe) tile).pipe;
-        }
+		Pipe pipe2 = null;
 
-        if (BuildCraftTransport.alwaysConnectPipes) {
-            return super.isPipeConnected(tile);
-        }
-        else {
-            return (pipe2 == null || !(pipe2.logic instanceof PipeLogicCobblestone))
-                   && super.isPipeConnected(tile);
-        }
-    }
+		if (tile instanceof TileGenericPipe) {
+			pipe2 = ((TileGenericPipe) tile).pipe;
+		}
+
+		if (BuildCraftTransport.alwaysConnectPipes) {
+			return super.isPipeConnected(tile);
+		}
+		else {
+			return (pipe2 == null || !(pipe2.logic instanceof PipeLogicCobblestone)) && super.isPipeConnected(tile);
+		}
+	}
 
 }
