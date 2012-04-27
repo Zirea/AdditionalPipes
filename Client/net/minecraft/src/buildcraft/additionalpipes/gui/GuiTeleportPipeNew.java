@@ -4,8 +4,11 @@ import java.beans.FeatureDescriptor;
 import java.util.ArrayList;
 
 import net.minecraft.src.*;
-import net.minecraft.src.buildcraft.additionalpipes.core.FrequencyMap;
+import net.minecraft.src.buildcraft.additionalpipes.gui.components.GuiBetterTextField;
+import net.minecraft.src.buildcraft.additionalpipes.gui.components.GuiButtonShorter;
+import net.minecraft.src.buildcraft.additionalpipes.gui.components.GuiNameSlot;
 import net.minecraft.src.buildcraft.additionalpipes.pipes.PipeTeleport;
+import net.minecraft.src.buildcraft.additionalpipes.util.FrequencyMap;
 import net.minecraft.src.buildcraft.transport.TileGenericPipe;
 
 import org.lwjgl.opengl.GL11;
@@ -278,6 +281,12 @@ public class GuiTeleportPipeNew extends GuiScreen implements IGuiIndirectButtons
 	protected void keyTyped(char c, int i) {
 
 		super.keyTyped(c, i);
+		
+		if(i == mc.gameSettings.keyBindInventory.keyCode)
+        {
+            mc.thePlayer.closeScreen();
+            return;
+        }
 
 		textboxFreq.textboxKeyTyped(c, i);
 		textboxName.textboxKeyTyped(c, i);

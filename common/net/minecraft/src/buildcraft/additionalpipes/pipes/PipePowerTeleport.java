@@ -25,9 +25,9 @@ import net.minecraft.src.buildcraft.transport.Pipe;
 import net.minecraft.src.buildcraft.transport.PipeTransportPower;
 import net.minecraft.src.buildcraft.transport.TileGenericPipe;
 import net.minecraft.src.buildcraft.additionalpipes.*;
-import net.minecraft.src.buildcraft.additionalpipes.core.FrequencyMap;
 import net.minecraft.src.buildcraft.additionalpipes.logic.PipeLogicTeleport;
 import net.minecraft.src.buildcraft.additionalpipes.network.NetworkID;
+import net.minecraft.src.buildcraft.additionalpipes.util.FrequencyMap;
 
 public class PipePowerTeleport extends PipeTeleport implements IPipeTransportPowerHook {
 	

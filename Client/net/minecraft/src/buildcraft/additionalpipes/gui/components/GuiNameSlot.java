@@ -1,4 +1,4 @@
-package net.minecraft.src.buildcraft.additionalpipes.gui;
+package net.minecraft.src.buildcraft.additionalpipes.gui.components;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -9,7 +9,7 @@ import codechicken.core.IGuiIndirectButtons;
 
 import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.FontRenderer;
-import net.minecraft.src.buildcraft.additionalpipes.core.FrequencyMap;
+import net.minecraft.src.buildcraft.additionalpipes.util.FrequencyMap;
 
 public class GuiNameSlot extends GuiScrollSlot
 {

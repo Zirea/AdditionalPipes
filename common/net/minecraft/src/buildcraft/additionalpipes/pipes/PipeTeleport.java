@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Map;
 
 import net.minecraft.src.buildcraft.additionalpipes.MutiPlayerProxy;
-import net.minecraft.src.buildcraft.additionalpipes.core.FrequencyMap;
 import net.minecraft.src.buildcraft.additionalpipes.logic.PipeLogicTeleport;
+import net.minecraft.src.buildcraft.additionalpipes.util.FrequencyMap;
 import net.minecraft.src.buildcraft.api.EntityPassiveItem;
 import net.minecraft.src.buildcraft.api.Orientations;
 import net.minecraft.src.buildcraft.api.Position;
@@ -49,7 +49,7 @@ public abstract class PipeTeleport extends Pipe {
 
         for (PipeTeleport pipe : teleportPipes) {
         	
-        	if (!pipe.isValid() || !this.getClass().equals(pipe.getClass())) {
+        	if (!this.getClass().equals(pipe.getClass())) {
         		continue;
         	}
         	
@@ -79,7 +79,7 @@ public abstract class PipeTeleport extends Pipe {
 
         for (PipeTeleport pipe : teleportPipes) {
         	
-        	if (!BlockGenericPipe.isValid(pipe)) {
+        	if (!BlockGenericPipe.isValid(pipe) || !worldObj.blockExists(pipe.xCoord, pipe.yCoord, pipe.zCoord)) {
         		toRemove.add(pipe);
         		worldObj.removeBlockTileEntity(pipe.xCoord, pipe.yCoord, pipe.zCoord);
         	}

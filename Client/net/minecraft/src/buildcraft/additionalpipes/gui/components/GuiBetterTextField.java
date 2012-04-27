@@ -1,4 +1,4 @@
-package net.minecraft.src.buildcraft.additionalpipes.gui;
+package net.minecraft.src.buildcraft.additionalpipes.gui.components;
 
 import org.lwjgl.input.Keyboard;
 
