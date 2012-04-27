@@ -32,14 +32,14 @@ public class GuiTeleportPipeNew extends GuiScreen implements IGuiIndirectButtons
 	private GuiButton canReceiveButton;
 
 	private PipeTeleport pipe;
+	private EntityPlayer player;
 	private int selectedFreq;
 	private FrequencyMap frequencyMap;
 
-	public boolean largeGui = false;
-
-	public GuiTeleportPipeNew(TileGenericPipe tile) {
+	public GuiTeleportPipeNew(TileGenericPipe tile, EntityPlayer player) {
 
 		super();
+		this.player = player;
 		pipe = (PipeTeleport) tile.pipe;
 	}
 
@@ -52,48 +52,48 @@ public class GuiTeleportPipeNew extends GuiScreen implements IGuiIndirectButtons
 		
 		controlList.clear();
 
-		setFreqButton = new GuiButtonShorter(0, positionX(50), positionY(7), 22, 16, "Set");
+		setFreqButton = new GuiButtonShorter(0, posX(50), posY(7), 22, 16, "Set");
 		controlList.add(setFreqButton);
 
-		textboxFreq = new GuiBetterTextField(this, fontRenderer, positionX(7), positionY(7), 40, 16, "");
+		textboxFreq = new GuiBetterTextField(this, fontRenderer, posX(7), posY(7), 40, 16, "");
 		textboxFreq.setMaxStringLength(5);
 		textboxFreq.setReturnButton(setFreqButton);
 		textboxFreq.setAllowedCharacters("0123456789");
 
-		controlList.add(new GuiButton(1, positionX(6), positionY(28), 30, 20, "-"));
-		controlList.add(new GuiButton(2, positionX(42), positionY(28), 30, 20, "+"));
-		controlList.add(new GuiButton(3, positionX(6), positionY(52), 30, 20, "-10"));
-		controlList.add(new GuiButton(4, positionX(42), positionY(52), 30, 20, "+10"));
-		controlList.add(new GuiButton(5, positionX(6), positionY(76), 30, 20, "-100"));
-		controlList.add(new GuiButton(6, positionX(42), positionY(76), 30, 20, "+100"));
+		controlList.add(new GuiButton(1, posX(6), posY(28), 30, 20, "-"));
+		controlList.add(new GuiButton(2, posX(42), posY(28), 30, 20, "+"));
+		controlList.add(new GuiButton(3, posX(6), posY(52), 30, 20, "-10"));
+		controlList.add(new GuiButton(4, posX(42), posY(52), 30, 20, "+10"));
+		controlList.add(new GuiButton(5, posX(6), posY(76), 30, 20, "-100"));
+		controlList.add(new GuiButton(6, posX(42), posY(76), 30, 20, "+100"));
 
-		setNameButton = new GuiButtonShorter(7, positionX(196), positionY(29), 42, 16, "Add");
+		setNameButton = new GuiButtonShorter(7, posX(196), posY(29), 42, 16, "Add");
 		controlList.add(setNameButton);
-		removeNameButton = new GuiButtonShorter(8, positionX(196), positionY(29), 42, 16, "Remove");
+		removeNameButton = new GuiButtonShorter(8, posX(196), posY(29), 42, 16, "Remove");
 		controlList.add(removeNameButton);
 
-		textboxName = new GuiBetterTextField(this, fontRenderer, positionX(80), positionY(29), 114, 16, "Test Name");
+		textboxName = new GuiBetterTextField(this, fontRenderer, posX(80), posY(29), 114, 16, "Test Name");
 		textboxName.setMaxStringLength(20);
 		textboxName.setReturnButton(setNameButton);
 		textboxName.isFocused = false;
 
-		selectNameButton = new GuiButton(9, positionX(0), positionY(0), 0, 0, "");
+		selectNameButton = new GuiButton(9, posX(0), posY(0), 0, 0, "");
 		controlList.add(selectNameButton);
 		
-		slotNames = new GuiNameSlot(this, fontRenderer, positionX(80), positionY(49), 156, 46);
+		slotNames = new GuiNameSlot(this, fontRenderer, posX(80), posY(49), 156, 46);
 		slotNames.registerButtons(null, null, selectNameButton);
 
-		canReceiveButton = new GuiButtonShorter(10, positionX(204), positionY(8), 34, 16, "");
+		canReceiveButton = new GuiButtonShorter(10, posX(204), posY(8), 34, 16, "");
 		controlList.add(canReceiveButton);
 		
 		refresh();
 	}
 
-	private int positionX(int offset) {
+	private int posX(int offset) {
 		return (width - guiWidth) / 2 + offset;
 	}
 
-	private int positionY(int offset) {
+	private int posY(int offset) {
 		return (height - guiHeight) / 2 + offset;
 	}
 
@@ -121,9 +121,9 @@ public class GuiTeleportPipeNew extends GuiScreen implements IGuiIndirectButtons
 		GL11.glDisable(2896 /* GL_LIGHTING */);
 		GL11.glDisable(2929 /* GL_DEPTH_TEST */);
 
-		fontRenderer.drawString("Connected: " + pipe.getConnectedPipes(true).size(), positionX(80), positionY(12), 0x404040);
-		fontRenderer.drawString("Receive:", positionX(160), positionY(12), 0x404040);
-		fontRenderer.drawString("Owner: " + pipe.logic.owner, positionX(6), positionY(102), 0x404040);
+		fontRenderer.drawString("Connected: " + pipe.getConnectedPipes(true).size(), posX(80), posY(12), 0x404040);
+		fontRenderer.drawString("Receive:", posX(160), posY(12), 0x404040);
+		fontRenderer.drawString("Owner: " + pipe.logic.owner, posX(6), posY(102), 0x404040);
 
 		slotNames.drawScreen(i, j, f);
 
@@ -137,12 +137,12 @@ public class GuiTeleportPipeNew extends GuiScreen implements IGuiIndirectButtons
 	}
 
 	private boolean nameIsUsed(String name) {
-		return frequencyMap.getFreq(name) > -1;
+		return frequencyMap.getFreq(player.username, name) > -1;
 	}
 
 	private void updateNames() {
 
-		String frequencyName = frequencyMap.getFreqName(selectedFreq);
+		String frequencyName = frequencyMap.getFreqName(player.username, selectedFreq);
 		String typedName = textboxName.getText();
 		boolean set = frequencyName == null || frequencyName.equals("") || !frequencyName.equals(typedName);
 		boolean canset = !typedName.equals("") && !nameIsUsed(typedName);
@@ -153,10 +153,10 @@ public class GuiTeleportPipeNew extends GuiScreen implements IGuiIndirectButtons
 		removeNameButton.drawButton = !set;
 		
 		if (set) {
-			slotNames.updateNameList(frequencyMap.getNames(), textboxName.getText());
+			slotNames.updateNameList(frequencyMap.getNames(player.username), textboxName.getText());
 		}
 		else if (frequencyName.equals(typedName)) {
-			slotNames.updateNameList(frequencyMap.getNames(), "");
+			slotNames.updateNameList(frequencyMap.getNames(player.username), "");
 			slotNames.removeName(typedName);
 		}
 		else {
@@ -166,7 +166,7 @@ public class GuiTeleportPipeNew extends GuiScreen implements IGuiIndirectButtons
 
 	private void reloadNameText() {
 
-		String name = frequencyMap.getFreqName(selectedFreq);
+		String name = frequencyMap.getFreqName(player.username, selectedFreq);
 		if (name == null) {
 			name = "";
 		}
@@ -221,20 +221,20 @@ public class GuiTeleportPipeNew extends GuiScreen implements IGuiIndirectButtons
 
 	private void pressSetNameButton() {
 
-		frequencyMap.setFreqName(selectedFreq, textboxName.getText());
+		frequencyMap.setFreqName(player.username, selectedFreq, textboxName.getText());
 		//NEED TO SEND NETWORK UPDATE
 	}
 
 	private void pressRemNameButton() {
 
-		frequencyMap.removeFreqName(selectedFreq);
+		frequencyMap.removeFreqName(player.username, selectedFreq);
 		textboxName.setText("");
 		//NEED TO SEND NETWORK UPDATE
 	}
 
 	private void selectSlotName() {
 		
-		int freq = frequencyMap.getFreq(slotNames.getSelectedName());
+		int freq = frequencyMap.getFreq(player.username, slotNames.getSelectedName());
 		if (freq > -1) {
 			selectedFreq = freq;
 			setNewFreq();
@@ -282,8 +282,8 @@ public class GuiTeleportPipeNew extends GuiScreen implements IGuiIndirectButtons
 
 		super.keyTyped(c, i);
 		
-		if(i == mc.gameSettings.keyBindInventory.keyCode)
-        {
+		if(i == mc.gameSettings.keyBindInventory.keyCode && !textboxName.isFocused) {
+			
             mc.thePlayer.closeScreen();
             return;
         }

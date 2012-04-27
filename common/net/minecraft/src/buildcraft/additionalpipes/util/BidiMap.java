@@ -1,6 +1,7 @@
 package net.minecraft.src.buildcraft.additionalpipes.util;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -14,12 +15,13 @@ public class BidiMap<K, V> implements Serializable {
 		return keyToValueMap.keySet();
 	}
 	
-	public Set<V> values() {
-		return valueToKeyMap.keySet();
+	public Collection<V> values() {
+		return keyToValueMap.values();
 	}
 	
 	public synchronized void put(K key, V value) {
 		keyToValueMap.put(key, value);
+		valueToKeyMap.put(value, key);
 	}
 	
 	public synchronized V removeByKey(K key) {

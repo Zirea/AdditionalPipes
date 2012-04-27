@@ -7,20 +7,29 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 public class SerializeTest {
 
 	private FrequencyMap frequencyMap = new FrequencyMap();
+	private ArrayList<String> usernames = new ArrayList<String>();
 
 	public SerializeTest() {
 		
-		frequencyMap.setFreqName(0, "test0");
-		frequencyMap.setFreqName(1, "test1");
-		frequencyMap.setFreqName(2, "test2");
-		frequencyMap.setFreqName(3, "test3");
-		frequencyMap.setFreqName(4, "test4");
+		usernames.add("Kyprus");
+		usernames.add("Phantomfox32");
+		usernames.add("Mercios");
+		
+		for (String username : usernames) {
+			
+			frequencyMap.setFreqName(username, 0, "test0");
+			frequencyMap.setFreqName(username, 1, "test1");
+			frequencyMap.setFreqName(username, 2, "test2");
+			frequencyMap.setFreqName(username, 3, "test3");
+			frequencyMap.setFreqName(username, 4, "test4");
+		}
 		
 		writeMap();
 		
@@ -74,9 +83,12 @@ public class SerializeTest {
 	
 	public void printMap() {
 		
-		for (int freq : frequencyMap.keys()) {
+		for (String username : usernames) {
 			
-			System.out.println(freq + ": " + frequencyMap.getFreqName(freq));
+			for (int freq : frequencyMap.keys("Kyprus")) {
+				
+				System.out.println(username + freq + ": " + frequencyMap.getFreqName("Kyprus", freq));
+			}
 		}
 	}
 
