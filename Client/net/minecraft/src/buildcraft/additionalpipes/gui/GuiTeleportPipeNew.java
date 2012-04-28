@@ -341,4 +341,9 @@ public class GuiTeleportPipeNew extends GuiScreen implements IGuiIndirectButtons
 
 		return false;
 	}
+	
+	@Override
+	public void onGuiClosed() {
+		pipe.saveFrequencyMap(frequencyMap); 
+	}
 }

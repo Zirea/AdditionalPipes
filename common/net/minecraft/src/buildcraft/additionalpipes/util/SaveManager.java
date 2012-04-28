@@ -41,7 +41,13 @@ public class SaveManager {
 
 	public void save(String key, Object obj) {
 
-		File saveFile = new File(getDataDir(), FILE_PREFIX + key + ".dat");
+		File saveDir = new File(getDataDir());
+		
+		if (!saveDir.exists()) {
+			saveDir.mkdir();
+		}
+		
+		File saveFile = new File(saveDir, FILE_PREFIX + key + ".dat");
 
 		GZIPOutputStream gzipOutputStream;
 		ObjectOutputStream objOut;
@@ -61,10 +67,14 @@ public class SaveManager {
 
 	}
 
-	public void load(String key, Object obj) {
+	public Object load(String key, Object obj) {
 
 		File saveFile = new File(getDataDir(), FILE_PREFIX + key + ".dat");
 
+		if (!saveFile.exists()) {
+			return obj;
+		}
+		
 		GZIPInputStream gzipInputStream;
 		ObjectInputStream objIn;
 		try {
@@ -72,8 +82,10 @@ public class SaveManager {
 			gzipInputStream = new GZIPInputStream(new FileInputStream(saveFile));
 			objIn = new ObjectInputStream(gzipInputStream);
 
-			obj = objIn.readObject();
+			Object objFromFile = objIn.readObject();
 			objIn.close();
+			
+			return objFromFile;
 
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -82,17 +94,23 @@ public class SaveManager {
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
+		
+		return null;
+	}
+	
+	public Object load(String key) {
+		return load(key, null);
 	}
 
 	public String getDataDir() {
 
-		World world = DimensionManager.getWorld(dimension);
+		World world = DimensionManager.getProvider(dimension).worldObj;
 
 		try {
 			ISaveHandler worldsaver = world.getSaveHandler();
 			IChunkLoader loader = worldsaver.getChunkLoader(world.worldProvider);
 			if (loader instanceof AnvilChunkLoader) {
-				return (String) ModLoader.getPrivateValue(AnvilChunkLoader.class, loader, 3);
+				return ((File)ModLoader.getPrivateValue(AnvilChunkLoader.class, loader, 3)).getPath() + File.separator + "ap";
 			}
 			return null;
 		} catch (Exception e) {

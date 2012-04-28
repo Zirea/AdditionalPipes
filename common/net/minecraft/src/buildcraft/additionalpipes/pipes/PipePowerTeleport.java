@@ -22,6 +22,7 @@ import net.minecraft.src.buildcraft.transport.TileGenericPipe;
 import net.minecraft.src.buildcraft.additionalpipes.logic.PipeLogicTeleport;
 import net.minecraft.src.buildcraft.additionalpipes.network.NetworkID;
 import net.minecraft.src.buildcraft.additionalpipes.util.FrequencyMap;
+import net.minecraft.src.buildcraft.additionalpipes.util.SaveManager;
 
 public class PipePowerTeleport extends PipeTeleport implements IPipeTransportPowerHook {
 
@@ -37,7 +38,7 @@ public class PipePowerTeleport extends PipeTeleport implements IPipeTransportPow
 		}
 	}
 
-	public static FrequencyMap freqencyMap = new FrequencyMap();
+	public static FrequencyMap frequencyMap;
 
 	public PipePowerTeleport(int itemID) {
 
@@ -247,11 +248,16 @@ public class PipePowerTeleport extends PipeTeleport implements IPipeTransportPow
 			}
 		}
 	}
-
+	
 	@Override
 	public FrequencyMap getFrequencyMap() {
 
-		return freqencyMap;
-	}
+		if (frequencyMap == null) {
+			
+			frequencyMap = new FrequencyMap();
+			frequencyMap = (FrequencyMap) SaveManager.getManager(0).load(getSmallClassName() + "freqmap", frequencyMap);
+		}
 
+		return frequencyMap;
+	}
 }

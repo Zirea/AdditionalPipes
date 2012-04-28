@@ -5,6 +5,7 @@ import java.util.List;
 import net.minecraft.src.buildcraft.additionalpipes.MutiPlayerProxy;
 import net.minecraft.src.buildcraft.additionalpipes.logic.PipeLogicTeleport;
 import net.minecraft.src.buildcraft.additionalpipes.util.FrequencyMap;
+import net.minecraft.src.buildcraft.additionalpipes.util.SaveManager;
 import net.minecraft.src.buildcraft.api.Position;
 import net.minecraft.src.buildcraft.transport.BlockGenericPipe;
 import net.minecraft.src.buildcraft.transport.Pipe;
@@ -12,9 +13,8 @@ import net.minecraft.src.buildcraft.transport.PipeTransport;
 
 public abstract class PipeTeleport extends Pipe {
 
-	public final PipeLogicTeleport logic;
-
 	public static List<PipeTeleport> teleportPipes = new LinkedList<PipeTeleport>();
+	public final PipeLogicTeleport logic;
 
 	public PipeTeleport(PipeTransport transport, PipeLogicTeleport logic, int itemID) {
 
@@ -86,4 +86,17 @@ public abstract class PipeTeleport extends Pipe {
 	}
 
 	public abstract FrequencyMap getFrequencyMap();
+	
+	public void saveFrequencyMap(FrequencyMap frequencyMap) {
+		
+		if (frequencyMap == null) {
+			return;
+		}
+		
+		SaveManager.getManager(0).save(getSmallClassName() + "freqmap", frequencyMap);
+	}
+	
+	protected String getSmallClassName() {
+		return this.getClass().getSimpleName().substring(4).toLowerCase();
+	}
 }
