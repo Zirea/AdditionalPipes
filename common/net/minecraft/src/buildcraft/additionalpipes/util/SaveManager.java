@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InvalidClassException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.HashMap;
@@ -77,25 +78,26 @@ public class SaveManager {
 		
 		GZIPInputStream gzipInputStream;
 		ObjectInputStream objIn;
+		Object objFromFile = null;
 		try {
 
 			gzipInputStream = new GZIPInputStream(new FileInputStream(saveFile));
 			objIn = new ObjectInputStream(gzipInputStream);
 
-			Object objFromFile = objIn.readObject();
+			objFromFile = objIn.readObject();
 			objIn.close();
 			
 			return objFromFile;
 
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
+		} catch (Exception e) {
+			ModLoader.getLogger().warning("Additional Pipes Save Manager: Unable to load saved data!");
 		}
 		
-		return null;
+		if (objFromFile != null) {
+			return objFromFile;
+		}
+		
+		return obj;
 	}
 	
 	public Object load(String key) {

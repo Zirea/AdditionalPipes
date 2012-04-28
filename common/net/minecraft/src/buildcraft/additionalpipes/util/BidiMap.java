@@ -6,28 +6,26 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class BidiMap<K, V> implements Serializable {
+public class BidiMap<K, V> implements Map<K, V>, Serializable, Cloneable {
 
 	private Map<K, V> keyToValueMap = new ConcurrentHashMap<K, V>();
 	private Map<V, K> valueToKeyMap = new ConcurrentHashMap<V, K>();
 
-	public Set<K> keys() {
-
-		return keyToValueMap.keySet();
-	}
-
+	@Override
 	public Collection<V> values() {
-
 		return keyToValueMap.values();
 	}
 
-	public synchronized void put(K key, V value) {
-
+	@Override
+	public synchronized V put(K key, V value) {
+		
 		keyToValueMap.put(key, value);
 		valueToKeyMap.put(value, key);
+		return value;
 	}
-
-	public synchronized V removeByKey(K key) {
+	
+	@Override
+	public synchronized V remove(Object key) {
 
 		V removedValue = keyToValueMap.remove(key);
 		valueToKeyMap.remove(removedValue);
@@ -41,24 +39,54 @@ public class BidiMap<K, V> implements Serializable {
 		return removedKey;
 	}
 
-	public boolean containsKey(K key) {
-
+	@Override
+	public boolean containsKey(Object key) {
 		return keyToValueMap.containsKey(key);
 	}
 
-	public boolean containsValue(V value) {
-
+	@Override
+	public boolean containsValue(Object value) {
 		return valueToKeyMap.containsKey(value);
 	}
 
-	public V get(K key) {
-
+	@Override
+	public V get(Object key) {
 		return keyToValueMap.get(key);
 	}
 
 	public K getKey(V value) {
-
 		return valueToKeyMap.get(value);
+	}
+
+	@Override
+	public void clear() {
+		keyToValueMap.clear();
+		valueToKeyMap.clear();
+	}
+
+	@Override
+	public Set entrySet() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public boolean isEmpty() {
+		return keyToValueMap.isEmpty();
+	}
+
+	@Override
+	public Set keySet() {
+		return keyToValueMap.keySet();
+	}
+
+	@Override
+	public void putAll(Map m) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public int size() {
+		return keyToValueMap.size();
 	}
 
 }

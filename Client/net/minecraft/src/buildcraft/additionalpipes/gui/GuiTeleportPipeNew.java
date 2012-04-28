@@ -338,12 +338,15 @@ public class GuiTeleportPipeNew extends GuiScreen implements IGuiIndirectButtons
 
 	@Override
 	public boolean doesGuiPauseGame() {
-
 		return false;
 	}
 	
 	@Override
 	public void onGuiClosed() {
-		pipe.saveFrequencyMap(frequencyMap); 
+		
+		if (!frequencyMap.getNames(player.username).isEmpty() && frequencyMap.hasChanged()) {
+			System.out.println("Saving frequency map.");
+			pipe.saveFrequencyMap(frequencyMap); 
+		}
 	}
 }

@@ -7,9 +7,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import javax.swing.plaf.basic.BasicScrollPaneUI.HSBChangeListener;
+
+import org.lwjgl.Sys;
+
 public class FrequencyMap implements Serializable {
 
 	private Map<String, BidiMap> map = new HashMap<String, BidiMap>();
+	private boolean hasChanged = false;
 
 	public Set<Integer> keys(String username) {
 
@@ -17,7 +22,7 @@ public class FrequencyMap implements Serializable {
 			return null;
 		}
 
-		return map.get(username).keys();
+		return map.get(username).keySet();
 	}
 
 	public Collection<String> values(String username) {
@@ -58,6 +63,7 @@ public class FrequencyMap implements Serializable {
 		}
 
 		map.get(username).put(selectedFreq, name);
+		hasChanged = true;
 	}
 
 	public void removeFreqName(String username, int selectedFreq) {
@@ -66,7 +72,8 @@ public class FrequencyMap implements Serializable {
 			return;
 		}
 
-		map.get(username).removeByKey(selectedFreq);
+		map.get(username).remove(selectedFreq);
+		hasChanged = true;
 	}
 
 	public ArrayList<String> getNames(String username) {
@@ -78,6 +85,20 @@ public class FrequencyMap implements Serializable {
 		}
 
 		return names;
+	}
+	
+	public boolean hasChanged() {
+		
+		if (hasChanged) {
+			hasChanged = false;
+			return true;
+		}
+		
+		return false;
+	}
+	
+	public Map getMap() {
+		return map;
 	}
 
 }
