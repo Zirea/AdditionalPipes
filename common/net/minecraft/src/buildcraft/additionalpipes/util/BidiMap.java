@@ -59,7 +59,7 @@ public class BidiMap<K, V> implements Map<K, V>, Serializable, Cloneable {
 	}
 
 	@Override
-	public void clear() {
+	public synchronized void clear() {
 		keyToValueMap.clear();
 		valueToKeyMap.clear();
 	}

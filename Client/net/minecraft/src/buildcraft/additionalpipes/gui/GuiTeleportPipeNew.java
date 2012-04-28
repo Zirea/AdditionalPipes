@@ -4,13 +4,13 @@ import net.minecraft.src.*;
 import net.minecraft.src.buildcraft.additionalpipes.gui.components.GuiBetterTextField;
 import net.minecraft.src.buildcraft.additionalpipes.gui.components.GuiButtonShorter;
 import net.minecraft.src.buildcraft.additionalpipes.gui.components.GuiNameSlot;
+import net.minecraft.src.buildcraft.additionalpipes.gui.components.IGuiIndirectButtons;
 import net.minecraft.src.buildcraft.additionalpipes.pipes.PipeTeleport;
 import net.minecraft.src.buildcraft.additionalpipes.util.FrequencyMap;
 import net.minecraft.src.buildcraft.transport.TileGenericPipe;
 
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
-
-import codechicken.core.IGuiIndirectButtons;
 
 public class GuiTeleportPipeNew extends GuiScreen implements IGuiIndirectButtons {
 
@@ -205,15 +205,11 @@ public class GuiTeleportPipeNew extends GuiScreen implements IGuiIndirectButtons
 			break;
 		}
 
-		if (selectedFreq < 0 || selectedFreq > 99999) {
-			selectedFreq = 0;
-		}
-
 		setNewFreq();
 	}
 
 	private void pressSetFreqButton() {
-
+		
 		selectedFreq = Integer.parseInt(textboxFreq.getText());
 		setNewFreq();
 	}
@@ -221,14 +217,12 @@ public class GuiTeleportPipeNew extends GuiScreen implements IGuiIndirectButtons
 	private void pressSetNameButton() {
 
 		frequencyMap.setFreqName(player.username, selectedFreq, textboxName.getText());
-		// NEED TO SEND NETWORK UPDATE
 	}
 
 	private void pressRemNameButton() {
 
 		frequencyMap.removeFreqName(player.username, selectedFreq);
 		textboxName.setText("");
-		// NEED TO SEND NETWORK UPDATE
 	}
 
 	private void selectSlotName() {
@@ -311,6 +305,29 @@ public class GuiTeleportPipeNew extends GuiScreen implements IGuiIndirectButtons
 
 		slotNames.mouseMovedOrUp(i, j, k);
 	}
+	
+	@Override
+	public void handleMouseInput() {
+		
+    	super.handleMouseInput();
+    	
+    	int i = Mouse.getEventDWheel();
+    	if (i != 0) {
+    		
+    		int posX = Mouse.getEventX() * this.width / this.mc.displayWidth;
+            int posY = this.height - Mouse.getEventY() * this.height / this.mc.displayHeight - 1;
+            
+            if(slotNames.contains(posX, posY)) {
+            	slotNames.scroll(-i);
+            }
+            else if (textboxFreq.isFocused || textboxFreq.contains(posX, posY)) {
+            	 i = -i / 120;
+            	 selectedFreq += i;
+            	 setNewFreq();
+            }
+    		
+    	}
+    }
 
 	public void selectNextField() {
 
@@ -320,6 +337,12 @@ public class GuiTeleportPipeNew extends GuiScreen implements IGuiIndirectButtons
 
 	private void setNewFreq() {
 
+		if (selectedFreq < 0) {
+			selectedFreq = 0;
+		} else if (selectedFreq > 99999) {
+			selectedFreq = 99999;
+		}
+		
 		pipe.logic.freq = selectedFreq;
 		refresh();
 	}
@@ -330,10 +353,7 @@ public class GuiTeleportPipeNew extends GuiScreen implements IGuiIndirectButtons
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		mc.renderEngine.bindTexture(i);
 
-		int posx = width / 2 - guiWidth / 2;
-		int posy = height / 2 - guiHeight / 2;
-
-		drawTexturedModalRect(posx, posy, 0, 0, guiWidth, guiHeight);
+		drawTexturedModalRect(posX(0), posY(0), 0, 0, guiWidth, guiHeight);
 	}
 
 	@Override
@@ -345,7 +365,6 @@ public class GuiTeleportPipeNew extends GuiScreen implements IGuiIndirectButtons
 	public void onGuiClosed() {
 		
 		if (!frequencyMap.getNames(player.username).isEmpty() && frequencyMap.hasChanged()) {
-			System.out.println("Saving frequency map.");
 			pipe.saveFrequencyMap(frequencyMap); 
 		}
 	}

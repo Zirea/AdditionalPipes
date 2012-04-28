@@ -2,8 +2,6 @@ package net.minecraft.src.buildcraft.additionalpipes.gui.components;
 
 import org.lwjgl.input.Keyboard;
 
-import codechicken.core.IGuiIndirectButtons;
-
 import net.minecraft.src.*;
 
 public class GuiBetterTextField extends Gui {
@@ -90,6 +88,11 @@ public class GuiBetterTextField extends Gui {
 			setFocused(false);
 		}
 	}
+	
+	public boolean contains(int posx, int posy)
+    {
+        return posx >= xPos && posx < xPos + width && posy >= yPos && posy < yPos + height;
+    }
 
 	public void setFocused(boolean focused) {
 

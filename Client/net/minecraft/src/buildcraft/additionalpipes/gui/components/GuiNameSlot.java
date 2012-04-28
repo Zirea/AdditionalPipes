@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
-import codechicken.core.GuiScrollSlot;
-import codechicken.core.IGuiIndirectButtons;
-
 import net.minecraft.src.FontRenderer;
 
 public class GuiNameSlot extends GuiScrollSlot {
