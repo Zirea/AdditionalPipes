@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InvalidClassException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
@@ -23,24 +24,22 @@ public class SaveManager {
 
 	private static final String FILE_PREFIX = "ap";
 
-	private static HashMap<Integer, SaveManager> managers = new HashMap<Integer, SaveManager>();
+	private static SaveManager manager;
 	private int dimension;
 
-	public static SaveManager getManager(int dimension) {
+	public static SaveManager getManager() {
 
-		if (!managers.containsKey(dimension)) {
-			managers.put(dimension, new SaveManager(dimension));
+		if (manager == null) {
+			manager = new SaveManager();
 		}
 
-		return managers.get(dimension);
+		return manager;
 	}
 
-	private SaveManager(int dimension) {
-
-		this.dimension = dimension;
+	private SaveManager() {
 	}
 
-	public void save(String key, Object obj) {
+	public void save(String key, Serializable obj) {
 
 		File saveDir = new File(getDataDir());
 		
@@ -68,7 +67,7 @@ public class SaveManager {
 
 	}
 
-	public Object load(String key, Object obj) {
+	public Object load(String key, Serializable obj) {
 
 		File saveFile = new File(getDataDir(), FILE_PREFIX + key + ".dat");
 
@@ -90,7 +89,8 @@ public class SaveManager {
 			return objFromFile;
 
 		} catch (Exception e) {
-			ModLoader.getLogger().warning("Additional Pipes Save Manager: Unable to load saved data!");
+			ModLoader.getLogger().warning("Additional Pipes Save Manager: " +
+					"Unable to load saved data! (" + key + ")");
 		}
 		
 		if (objFromFile != null) {
@@ -116,7 +116,7 @@ public class SaveManager {
 			}
 			return null;
 		} catch (Exception e) {
-			ModLoader.throwException("Additional Pipes Save Manager", e);
+			ModLoader.throwException("Additional Pipes Save Manager: Unable to get data dir!", e);
 			return null;
 		}
 

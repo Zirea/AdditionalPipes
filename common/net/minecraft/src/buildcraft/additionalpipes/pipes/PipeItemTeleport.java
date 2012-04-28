@@ -132,7 +132,7 @@ public class PipeItemTeleport extends PipeTeleport implements IPipeTransportItem
 		if (frequencyMap == null) {
 			
 			frequencyMap = new FrequencyMap();
-			frequencyMap = (FrequencyMap) SaveManager.getManager(0).load(getSmallClassName() + "freqmap", frequencyMap);
+			frequencyMap = (FrequencyMap) SaveManager.getManager().load(getSmallClassName() + "freqmap", frequencyMap);
 		}
 
 		return frequencyMap;

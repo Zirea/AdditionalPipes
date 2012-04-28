@@ -93,7 +93,7 @@ public abstract class PipeTeleport extends Pipe {
 			return;
 		}
 		
-		SaveManager.getManager(0).save(getSmallClassName() + "freqmap", frequencyMap);
+		SaveManager.getManager().save(getSmallClassName() + "freqmap", frequencyMap);
 	}
 	
 	protected String getSmallClassName() {

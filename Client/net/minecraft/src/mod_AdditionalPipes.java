@@ -178,9 +178,12 @@ public class mod_AdditionalPipes extends NetworkMod {
 		ModLoader.registerKey(this, laserKeyBinding, false);
 		ModLoader.addLocalization("laserKeyBinding", "Turn on/off chunk loader boundries");
 
-		// MinecraftForge.registerSaveHandler(this);
+		
 		MinecraftForge.setGuiHandler(this, new GuiHandler());
-		MinecraftForge.registerChunkLoadHandler(new ChunkLoadingHandler());
+		
+		ChunkLoadingHandler chunkHandler = new ChunkLoadingHandler();
+		MinecraftForge.registerChunkLoadHandler(chunkHandler);
+		MinecraftForge.registerSaveHandler(chunkHandler);
 		// MinecraftForge.registerConnectionHandler(new NetworkHandler());
 
 	}
