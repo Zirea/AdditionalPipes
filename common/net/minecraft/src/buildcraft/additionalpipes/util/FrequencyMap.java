@@ -7,13 +7,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import javax.swing.plaf.basic.BasicScrollPaneUI.HSBChangeListener;
-
-import org.lwjgl.Sys;
-
 public class FrequencyMap implements Serializable {
 
-	private Map<String, BidiMap> map = new HashMap<String, BidiMap>();
+	private static final long serialVersionUID = -820035699061337927L;
+	
+	private final Map<String, BidiMap> map = new HashMap<String, BidiMap>();
 	private boolean hasChanged = false;
 
 	public Set<Integer> keys(String username) {

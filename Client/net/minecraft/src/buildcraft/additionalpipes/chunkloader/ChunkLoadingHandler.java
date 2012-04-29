@@ -1,22 +1,24 @@
 package net.minecraft.src.buildcraft.additionalpipes.chunkloader;
 
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
+
 import net.minecraft.client.Minecraft;
-import net.minecraft.src.*;
-import net.minecraft.src.buildcraft.additionalpipes.chunkloader.TileChunkLoader;
+import net.minecraft.src.Chunk;
+import net.minecraft.src.ChunkCoordIntPair;
+import net.minecraft.src.Entity;
+import net.minecraft.src.ModLoader;
+import net.minecraft.src.NBTTagCompound;
+import net.minecraft.src.World;
 import net.minecraft.src.buildcraft.additionalpipes.util.CoordPair;
 import net.minecraft.src.buildcraft.additionalpipes.util.SaveManager;
-import net.minecraft.src.forge.DimensionManager;
 import net.minecraft.src.forge.IChunkLoadHandler;
 import net.minecraft.src.forge.ISaveEventHandler;
 
 public class ChunkLoadingHandler implements IChunkLoadHandler, ISaveEventHandler {
 
-	private Minecraft mc = ModLoader.getMinecraftInstance();
+	private final Minecraft mc = ModLoader.getMinecraftInstance();
 	private static ChunkStore chunkStore;
 
 	private void log(String s) {
@@ -29,12 +31,14 @@ public class ChunkLoadingHandler implements IChunkLoadHandler, ISaveEventHandler
 		if (mc.theWorld != null && mc.theWorld.isRemote) {
 			return;
 		}
+		
+		for (CoordPair coords : chunkStore.getChunks(world)) {
+			
+			List<CoordPair> loadArea = chunkStore.getLoadArea(coords);
+			for (CoordPair chunkCoordPair : loadArea) {
 
-		for (TileChunkLoader tile : TileChunkLoader.chunkLoaderList) {
-
-			List<ChunkCoordIntPair> loadArea = tile.getLoadArea();
-			for (ChunkCoordIntPair chunkCoords : loadArea) {
-
+				ChunkCoordIntPair chunkCoords = chunkCoordPair.getChunkCoordIntPair();
+				
 				if (!chunkList.contains(chunkCoords)) {
 					chunkList.add(chunkCoords);
 					log("Adding chunk: " + chunkCoords);
@@ -44,7 +48,6 @@ public class ChunkLoadingHandler implements IChunkLoadHandler, ISaveEventHandler
 				}
 			}
 		}
-
 	}
 
 	@Override
@@ -54,12 +57,12 @@ public class ChunkLoadingHandler implements IChunkLoadHandler, ISaveEventHandler
 			return true;
 		}
 
-		for (TileChunkLoader tile : TileChunkLoader.chunkLoaderList) {
+		for (CoordPair coords : chunkStore.getChunks(chunk.worldObj)) {
+			
+			List<CoordPair> loadArea = chunkStore.getLoadArea(coords);
+			for (CoordPair chunkCoordPair : loadArea) {
 
-			List<ChunkCoordIntPair> loadArea = tile.getLoadArea();
-			for (ChunkCoordIntPair chunkCoords : loadArea) {
-
-				if (chunk.worldObj.getChunkFromChunkCoords(chunkCoords.chunkXPos, chunkCoords.chunkZPosition).equals(chunk)) {
+				if (chunk.getChunkCoordIntPair().equals(chunkCoordPair.getChunkCoordIntPair())) {
 					log("Keeping chunk: " + chunk.getChunkCoordIntPair());
 					return false;
 				}

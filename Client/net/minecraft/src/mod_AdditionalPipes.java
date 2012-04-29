@@ -3,14 +3,22 @@ package net.minecraft.src;
 import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
+
 import net.minecraft.client.Minecraft;
+import net.minecraft.src.buildcraft.additionalpipes.MutiPlayerProxy;
 import net.minecraft.src.buildcraft.additionalpipes.chunkloader.BlockChunkLoader;
-import net.minecraft.src.buildcraft.additionalpipes.chunkloader.TileChunkLoader;
 import net.minecraft.src.buildcraft.additionalpipes.chunkloader.ChunkLoadingHandler;
 import net.minecraft.src.buildcraft.additionalpipes.gui.GuiHandler;
-import net.minecraft.src.buildcraft.additionalpipes.MutiPlayerProxy;
-//import net.minecraft.src.buildcraft.additionalpipes.network.NetworkHandler;
-import net.minecraft.src.buildcraft.additionalpipes.pipes.*;
+import net.minecraft.src.buildcraft.additionalpipes.pipes.PipeItemTeleport;
+import net.minecraft.src.buildcraft.additionalpipes.pipes.PipeItemsAdvancedInsertion;
+import net.minecraft.src.buildcraft.additionalpipes.pipes.PipeItemsAdvancedWood;
+import net.minecraft.src.buildcraft.additionalpipes.pipes.PipeItemsDistributor;
+import net.minecraft.src.buildcraft.additionalpipes.pipes.PipeItemsRedstone;
+import net.minecraft.src.buildcraft.additionalpipes.pipes.PipeLiquidsRedstone;
+import net.minecraft.src.buildcraft.additionalpipes.pipes.PipeLiquidsTeleport;
+import net.minecraft.src.buildcraft.additionalpipes.pipes.PipePowerTeleport;
+import net.minecraft.src.buildcraft.additionalpipes.pipes.PipeTeleport;
+import net.minecraft.src.buildcraft.additionalpipes.util.CoordPair;
 import net.minecraft.src.buildcraft.api.LaserKind;
 import net.minecraft.src.buildcraft.core.Box;
 import net.minecraft.src.buildcraft.core.CoreProxy;
@@ -149,14 +157,13 @@ public class mod_AdditionalPipes extends NetworkMod {
 			int playerY = (int) mc.thePlayer.posY;
 
 			// Loop through chunks to with chunkloader
-			for (TileChunkLoader tile : TileChunkLoader.chunkLoaderList) {
+			for (CoordPair chunkCoords : ChunkLoadingHandler.getChunkStore().getChunks(mc.theWorld)) {
 
-				List<ChunkCoordIntPair> chunkCoords = tile.getLoadArea();
+				List<CoordPair> loadArea = ChunkLoadingHandler.getChunkStore().getLoadArea(chunkCoords);
+				for (CoordPair coords : loadArea) {
 
-				for (ChunkCoordIntPair coords : chunkCoords) {
-
-					int chunkX = coords.chunkXPos * 16;
-					int chunkZ = coords.chunkZPosition * 16;
+					int chunkX = coords.x * 16;
+					int chunkZ = coords.z * 16;
 
 					Box outsideLaser = new Box();
 					outsideLaser.initialize(chunkX, playerY, chunkZ, chunkX + 16, playerY, chunkZ + 16);

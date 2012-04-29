@@ -2,19 +2,18 @@ package net.minecraft.src.buildcraft.additionalpipes.chunkloader;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.swing.plaf.basic.BasicScrollPaneUI.HSBChangeListener;
-
-import net.minecraft.src.ChunkCoordIntPair;
 import net.minecraft.src.World;
 import net.minecraft.src.buildcraft.additionalpipes.util.CoordPair;
 
 public class ChunkStore implements Serializable {
 	
-	private ConcurrentHashMap<Integer, ArrayList<CoordPair>> chunkStore = new ConcurrentHashMap<Integer, ArrayList<CoordPair>>();
+	private static final long serialVersionUID = 5455301483129502046L;
+	
+	private final ConcurrentHashMap<Integer, ArrayList<CoordPair>> chunkStore = new ConcurrentHashMap<Integer, ArrayList<CoordPair>>();
 	private transient boolean hasChanged = false;
 	
 	public synchronized void addChunk(int dimension, CoordPair coords) {
@@ -26,6 +25,7 @@ public class ChunkStore implements Serializable {
 		chunkStore.get(dimension).add(coords);
 		hasChanged = true;
 	}
+	
 	
 	public void addChunk(World world, CoordPair coords) {
 		addChunk(world.worldProvider.worldType, coords);
@@ -40,11 +40,11 @@ public class ChunkStore implements Serializable {
 		chunkStore.get(dimension).remove(coords);
 		hasChanged = true;
 	}
-	
+
 	public void removeChunk(World world, CoordPair coords) {
 		removeChunk(world.worldProvider.worldType, coords);
 	}
-	
+
 	public boolean contains(int dimension, CoordPair coords) {
 		
 		if (!chunkStore.containsKey(dimension)) {
@@ -69,6 +69,20 @@ public class ChunkStore implements Serializable {
 	
 	public ArrayList<CoordPair> getChunks(World world) {
 		return getChunks(world.worldProvider.worldType);
+	}
+	
+	public List<CoordPair> getLoadArea(CoordPair coords) {
+
+		List<CoordPair> loadArea = new LinkedList<CoordPair>();
+
+		for (int x = -1; x < 2; x++) {
+			for (int z = -1; z < 2; z++) {
+				CoordPair chunkCoords = new CoordPair(coords.x + x, coords.z + z);
+				loadArea.add(chunkCoords);
+			}
+		}
+
+		return loadArea;
 	}
 	
 	public boolean isEmpty() {

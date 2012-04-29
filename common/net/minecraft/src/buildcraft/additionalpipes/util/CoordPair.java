@@ -6,6 +6,8 @@ import net.minecraft.src.ChunkCoordIntPair;
 
 public class CoordPair implements Serializable {
 
+	private static final long serialVersionUID = 3746548248318546511L;
+	
 	public int x;
 	public int z;
 	
@@ -26,7 +28,15 @@ public class CoordPair implements Serializable {
 	
 	@Override
 	public boolean equals(Object obj) {
+		
+		if (!(obj instanceof CoordPair))
+			return false;
+		
 		CoordPair test = (CoordPair) obj;
 		return test.x == x && test.z == z;
+	}
+
+	public ChunkCoordIntPair getChunkCoordIntPair() {
+		return new ChunkCoordIntPair(x, z);
 	}
 }

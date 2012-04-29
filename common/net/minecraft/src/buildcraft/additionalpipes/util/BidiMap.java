@@ -8,8 +8,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class BidiMap<K, V> implements Map<K, V>, Serializable, Cloneable {
 
-	private Map<K, V> keyToValueMap = new ConcurrentHashMap<K, V>();
-	private Map<V, K> valueToKeyMap = new ConcurrentHashMap<V, K>();
+	private static final long serialVersionUID = 7154675557525627071L;
+	
+	private final Map<K, V> keyToValueMap = new ConcurrentHashMap<K, V>();
+	private final Map<V, K> valueToKeyMap = new ConcurrentHashMap<V, K>();
 
 	@Override
 	public Collection<V> values() {
