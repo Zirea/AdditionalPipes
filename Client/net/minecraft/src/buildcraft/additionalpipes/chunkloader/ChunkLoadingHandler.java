@@ -19,6 +19,10 @@ public class ChunkLoadingHandler implements IChunkLoadHandler, ISaveEventHandler
 	private Minecraft mc = ModLoader.getMinecraftInstance();
 	private static ChunkStore chunkStore;
 
+	private void log(String s) {
+		System.out.println(s);
+	}
+	
 	@Override
 	public void addActiveChunks(World world, Set<ChunkCoordIntPair> chunkList) {
 
@@ -33,10 +37,10 @@ public class ChunkLoadingHandler implements IChunkLoadHandler, ISaveEventHandler
 
 				if (!chunkList.contains(chunkCoords)) {
 					chunkList.add(chunkCoords);
-					// log("Adding chunk: " + chunkCoords, LOG_INFO);
+					log("Adding chunk: " + chunkCoords);
 				}
 				else {
-					// log(chunkCoords + " already there.", LOG_INFO);
+					log(chunkCoords + " already there.");
 				}
 			}
 		}
@@ -56,14 +60,13 @@ public class ChunkLoadingHandler implements IChunkLoadHandler, ISaveEventHandler
 			for (ChunkCoordIntPair chunkCoords : loadArea) {
 
 				if (chunk.worldObj.getChunkFromChunkCoords(chunkCoords.chunkXPos, chunkCoords.chunkZPosition).equals(chunk)) {
-					// log("Keeping chunk: " + chunk.getChunkCoordIntPair(),
-					// LOG_INFO);
+					log("Keeping chunk: " + chunk.getChunkCoordIntPair());
 					return false;
 				}
 			}
 		}
 
-		// log("Unloading chunk: " + chunk.getChunkCoordIntPair(), LOG_INFO);
+		log("Unloading chunk: " + chunk.getChunkCoordIntPair());
 		return true;
 	}
 
@@ -79,24 +82,18 @@ public class ChunkLoadingHandler implements IChunkLoadHandler, ISaveEventHandler
 	@Override
 	public void onWorldLoad(World world) {
 		
-		chunkStore = (ChunkStore) SaveManager.getManager().load("chunkstore", new ChunkStore());
-		
-		for (int dimension : DimensionManager.getIDs()) {
-			
-			if (dimension != 0) continue;
-			
-			IChunkProvider chunkProvider = DimensionManager.getProvider(dimension).getChunkProvider();
-			
-			ArrayList<CoordPair> chunksToLoad = chunkStore.getChunks(dimension);
-			for (CoordPair coords : chunksToLoad) {
-				
-				if (!chunkProvider.chunkExists(coords.x, coords.z)) {
-					chunkProvider.loadChunk(coords.x, coords.z);
-					System.out.println("Forcing chunk load: " + coords );
-				}
-			}
+		if (chunkStore == null) {
+			chunkStore = (ChunkStore) SaveManager.getManager().load("chunkstore", new ChunkStore());
 		}
 		
+		ArrayList<CoordPair> chunksToLoad = chunkStore.getChunks(world.worldProvider.worldType);
+		for (CoordPair coords : chunksToLoad) {
+			
+			if (!world.getChunkProvider().chunkExists(coords.x, coords.z)) {
+				world.getChunkProvider().loadChunk(coords.x, coords.z);
+				System.out.println("Forcing chunk load: " + coords );
+			}
+		}
 	}
 
 	@Override

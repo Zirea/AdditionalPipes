@@ -6,6 +6,7 @@ import java.util.List;
 import net.minecraft.src.Chunk;
 import net.minecraft.src.ChunkCoordIntPair;
 import net.minecraft.src.TileEntity;
+import net.minecraft.src.buildcraft.additionalpipes.util.CoordPair;
 
 public class TileChunkLoader extends TileEntity {
 
@@ -15,18 +16,27 @@ public class TileChunkLoader extends TileEntity {
 
 	}
 
-	private synchronized void addToList() {
-
+	private synchronized void addToChunkStore() {
+		
 		if (!chunkLoaderList.contains(this)) {
 			chunkLoaderList.add(this);
 		}
+		
+		if (!ChunkLoadingHandler.getChunkStore().contains(worldObj, getChunkCoords())) {
+			System.out.println("Adding to chunkStore: " + getChunkCoords());
+			ChunkLoadingHandler.getChunkStore().addChunk(worldObj, getChunkCoords());
+		}
 	}
 
-	private synchronized void removeFromList() {
+	private synchronized void removeFromChunkStore() {
 
-		if (chunkLoaderList.contains(this)) {
-			chunkLoaderList.remove(this);
-		}
+		chunkLoaderList.remove(this);
+		System.out.println("Removing from chunkStore: " + getChunkCoords());
+		ChunkLoadingHandler.getChunkStore().removeChunk(worldObj, getChunkCoords());
+	}
+	
+	protected CoordPair getChunkCoords() {
+		return new CoordPair(xCoord >> 4, yCoord >> 4);
 	}
 
 	/*
@@ -53,13 +63,13 @@ public class TileChunkLoader extends TileEntity {
 	public void updateEntity() {
 
 		super.updateEntity();
-		addToList();
+		addToChunkStore();
 	}
 
 	@Override
 	public void invalidate() {
 
 		super.invalidate();
-		removeFromList();
+		removeFromChunkStore();
 	}
 }

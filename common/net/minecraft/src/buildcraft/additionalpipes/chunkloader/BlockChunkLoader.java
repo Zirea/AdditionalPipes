@@ -15,37 +15,23 @@ import net.minecraft.src.forge.ITextureProvider;
 public class BlockChunkLoader extends BlockContainer implements ITextureProvider {
 
 	public BlockChunkLoader(int BlockID, int i) {
-
 		super(BlockID, i, Material.cloth);
 	}
 
 	@Override
 	public void onBlockAdded(World world, int i, int j, int k) {
-		
-		System.out.println("Block added.");
-		
-		Chunk chunk = world.getChunkFromBlockCoords(i, k);
-		ChunkLoadingHandler.getChunkStore().addChunk(0, new CoordPair(chunk.xPosition, chunk.zPosition));
 	}
 
 	@Override
-	public void onBlockRemoval(World world, int i, int j, int k) {
-
-		System.out.println("Block removed.");
-		
-		Chunk chunk = world.getChunkFromBlockCoords(i, k);
-		ChunkLoadingHandler.getChunkStore().removeChunk(0, new CoordPair(chunk.xPosition, chunk.zPosition));
-	}
+	public void onBlockRemoval(World world, int i, int j, int k) {}
 
 	@Override
 	public TileEntity getBlockEntity() {
-
 		return new TileChunkLoader();
 	}
 
 	@Override
 	public String getTextureFile() {
-
 		return "/net/minecraft/src/buildcraft/additionalpipes/resources/chunkloader.png";
 	}
 
