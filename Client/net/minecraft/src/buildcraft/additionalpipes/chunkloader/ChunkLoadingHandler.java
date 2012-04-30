@@ -41,10 +41,10 @@ public class ChunkLoadingHandler implements IChunkLoadHandler, ISaveEventHandler
 				
 				if (!chunkList.contains(chunkCoords)) {
 					chunkList.add(chunkCoords);
-					log("Adding chunk: " + chunkCoords);
+					//log("Adding chunk: " + chunkCoords);
 				}
 				else {
-					log(chunkCoords + " already there.");
+					//log(chunkCoords + " already there.");
 				}
 			}
 		}
@@ -63,13 +63,13 @@ public class ChunkLoadingHandler implements IChunkLoadHandler, ISaveEventHandler
 			for (CoordPair chunkCoordPair : loadArea) {
 
 				if (chunk.getChunkCoordIntPair().equals(chunkCoordPair.getChunkCoordIntPair())) {
-					log("Keeping chunk: " + chunk.getChunkCoordIntPair());
+					//log("Keeping chunk: " + chunk.getChunkCoordIntPair());
 					return false;
 				}
 			}
 		}
 
-		log("Unloading chunk: " + chunk.getChunkCoordIntPair());
+		//log("Unloading chunk: " + chunk.getChunkCoordIntPair());
 		return true;
 	}
 

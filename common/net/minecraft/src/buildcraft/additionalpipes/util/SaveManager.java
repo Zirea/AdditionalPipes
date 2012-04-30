@@ -2,20 +2,15 @@ package net.minecraft.src.buildcraft.additionalpipes.util;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InvalidClassException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 import net.minecraft.src.AnvilChunkLoader;
 import net.minecraft.src.IChunkLoader;
-import net.minecraft.src.ISaveHandler;
 import net.minecraft.src.ModLoader;
 import net.minecraft.src.World;
 import net.minecraft.src.forge.DimensionManager;
@@ -25,7 +20,6 @@ public class SaveManager {
 	private static final String FILE_PREFIX = "ap";
 
 	private static SaveManager manager;
-	private int dimension;
 
 	public static SaveManager getManager() {
 
@@ -59,10 +53,9 @@ public class SaveManager {
 			objOut.writeObject(obj);
 			objOut.close();
 
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (Exception e) {
+			ModLoader.getLogger().warning("Additional Pipes Save Manager: " +
+					"Unable to save data! (" + key + ")");
 		}
 
 	}
@@ -105,20 +98,36 @@ public class SaveManager {
 	}
 
 	public String getDataDir() {
-
-		World world = DimensionManager.getProvider(dimension).worldObj;
-
-		try {
-			ISaveHandler worldsaver = world.getSaveHandler();
-			IChunkLoader loader = worldsaver.getChunkLoader(world.worldProvider);
-			if (loader instanceof AnvilChunkLoader) {
-				return ((File)ModLoader.getPrivateValue(AnvilChunkLoader.class, loader, 3)).getPath() + File.separator + "ap";
+		
+		for (int id : DimensionManager.getIDs()) {
+			
+			World world = DimensionManager.getProvider(id).worldObj;
+			if (world != null) {
+				
+				try {
+					
+					IChunkLoader chunkLoader = world.getSaveHandler().getChunkLoader(world.worldProvider);
+					File worldDir = ((File)ModLoader.getPrivateValue(AnvilChunkLoader.class, chunkLoader, 3));
+					
+					return getBaseWorldDir(worldDir) + File.separator + "ap";
+					
+				} catch (Exception e) {
+					ModLoader.throwException("Additional Pipes Save Manager: Unable to get data dir!", e);
+					e.printStackTrace();
+					return null;
+				}
 			}
-			return null;
-		} catch (Exception e) {
-			ModLoader.throwException("Additional Pipes Save Manager: Unable to get data dir!", e);
-			return null;
 		}
-
+		
+		return null;
+	}
+	
+	private String getBaseWorldDir(File dir) {
+		
+		if (dir.getPath().contains("DIM")) {
+			return dir.getParent();
+		}
+		
+		return dir.getPath();
 	}
 }
