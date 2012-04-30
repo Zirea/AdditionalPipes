@@ -1,6 +1,5 @@
 package net.minecraft.src.buildcraft.additionalpipes.chunkloader;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -88,15 +87,6 @@ public class ChunkLoadingHandler implements IChunkLoadHandler, ISaveEventHandler
 		if (chunkStore == null) {
 			chunkStore = (ChunkStore) SaveManager.getManager().load("chunkstore", new ChunkStore());
 		}
-		
-		ArrayList<CoordPair> chunksToLoad = chunkStore.getChunks(world.worldProvider.worldType);
-		for (CoordPair coords : chunksToLoad) {
-			
-			if (!world.getChunkProvider().chunkExists(coords.x, coords.z)) {
-				world.getChunkProvider().loadChunk(coords.x, coords.z);
-				System.out.println("Forcing chunk load: " + coords );
-			}
-		}
 	}
 
 	@Override
@@ -104,7 +94,6 @@ public class ChunkLoadingHandler implements IChunkLoadHandler, ISaveEventHandler
 		
 		if (!chunkStore.isEmpty() && chunkStore.hasChanged()) {
 			SaveManager.getManager().save("chunkstore", chunkStore);
-			System.out.println("Saving chunkStore");
 		}
 		
 	}

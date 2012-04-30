@@ -86,7 +86,14 @@ public class ChunkStore implements Serializable {
 	}
 	
 	public boolean isEmpty() {
-		return chunkStore.isEmpty();
+		
+		for (int dimension : chunkStore.keySet()) {
+			if (!chunkStore.get(dimension).isEmpty()) {
+				return false;
+			}
+		}
+		
+		return true;
 	}
 
 	public boolean hasChanged() {
