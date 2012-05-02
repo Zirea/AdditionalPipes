@@ -88,10 +88,6 @@ public class PipeLogicTeleport extends PipeLogic {
 	public void writeToNBT(NBTTagCompound nbttagcompound) {
 
 		super.writeToNBT(nbttagcompound);
-		
-		//nbttagcompound.setInteger("pipeId", container.pipe.itemID);
-		
-		System.out.println("onSave, pipeId: " + nbttagcompound.getInteger("pipeId"));
 
 		nbttagcompound.setInteger("freq", freq);
 		nbttagcompound.setBoolean("canReceive", canReceive);
@@ -100,8 +96,6 @@ public class PipeLogicTeleport extends PipeLogic {
 
 	@Override
 	public void readFromNBT(NBTTagCompound nbttagcompound) {
-
-		System.out.println("onRead, pipeId: " + nbttagcompound.getInteger("pipeId"));
 		
 		super.readFromNBT(nbttagcompound);
 
