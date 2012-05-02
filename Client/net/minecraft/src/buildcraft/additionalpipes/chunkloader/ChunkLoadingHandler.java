@@ -11,6 +11,7 @@ import net.minecraft.src.ModLoader;
 import net.minecraft.src.NBTTagCompound;
 import net.minecraft.src.World;
 import net.minecraft.src.mod_AdditionalPipes;
+import net.minecraft.src.buildcraft.additionalpipes.pipes.PipeTeleport;
 import net.minecraft.src.buildcraft.additionalpipes.util.CoordPair;
 import net.minecraft.src.buildcraft.additionalpipes.util.SaveManager;
 import net.minecraft.src.forge.IChunkLoadHandler;
@@ -109,8 +110,8 @@ public class ChunkLoadingHandler implements IChunkLoadHandler, ISaveEventHandler
 
 	@Override
 	public void onChunkUnload(World world, Chunk chunk) {
-		
-		
+	
+		PipeTeleport.removeOldPipes(world);
 	}
 
 	@Override
