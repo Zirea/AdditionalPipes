@@ -2,6 +2,8 @@ package net.minecraft.src.buildcraft.additionalpipes.pipes;
 
 import java.util.LinkedList;
 import java.util.List;
+
+import net.minecraft.src.World;
 import net.minecraft.src.buildcraft.additionalpipes.MutiPlayerProxy;
 import net.minecraft.src.buildcraft.additionalpipes.logic.PipeLogicTeleport;
 import net.minecraft.src.buildcraft.additionalpipes.util.FrequencyMap;
@@ -35,7 +37,7 @@ public abstract class PipeTeleport extends Pipe {
 	public List<PipeTeleport> getConnectedPipes(boolean ignoreReceive) {
 
 		List<PipeTeleport> temp = new LinkedList<PipeTeleport>();
-		removeOldPipes();
+		removeOldPipes(worldObj);
 
 		PipeLogicTeleport logic = this.logic;
 
@@ -65,15 +67,15 @@ public abstract class PipeTeleport extends Pipe {
 		return temp;
 	}
 
-	public void removeOldPipes() {
+	public static void removeOldPipes(World world) {
 
 		LinkedList<PipeTeleport> toRemove = new LinkedList<PipeTeleport>();
 
 		for (PipeTeleport pipe : teleportPipes) {
 
-			if (!BlockGenericPipe.isValid(pipe) || !worldObj.blockExists(pipe.xCoord, pipe.yCoord, pipe.zCoord)) {
+			if (!BlockGenericPipe.isValid(pipe) || !world.blockExists(pipe.xCoord, pipe.yCoord, pipe.zCoord)) {
 				toRemove.add(pipe);
-				worldObj.removeBlockTileEntity(pipe.xCoord, pipe.yCoord, pipe.zCoord);
+				world.removeBlockTileEntity(pipe.xCoord, pipe.yCoord, pipe.zCoord);
 			}
 		}
 

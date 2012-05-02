@@ -108,7 +108,10 @@ public class ChunkLoadingHandler implements IChunkLoadHandler, ISaveEventHandler
 	public void onChunkLoad(World world, Chunk chunk) {}
 
 	@Override
-	public void onChunkUnload(World world, Chunk chunk) {}
+	public void onChunkUnload(World world, Chunk chunk) {
+		
+		
+	}
 
 	@Override
 	public void onChunkSaveData(World world, Chunk chunk, NBTTagCompound data) {}
