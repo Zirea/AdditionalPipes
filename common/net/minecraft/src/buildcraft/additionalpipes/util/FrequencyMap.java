@@ -57,7 +57,7 @@ public class FrequencyMap implements Serializable {
 		}
 
 		if (map.get(username).containsKey(selectedFreq)) {
-			map.get(username).removeByValue(name);
+			map.get(username).remove(selectedFreq);
 		}
 
 		map.get(username).put(selectedFreq, name);

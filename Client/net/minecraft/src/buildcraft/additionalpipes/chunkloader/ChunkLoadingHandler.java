@@ -10,6 +10,7 @@ import net.minecraft.src.Entity;
 import net.minecraft.src.ModLoader;
 import net.minecraft.src.NBTTagCompound;
 import net.minecraft.src.World;
+import net.minecraft.src.mod_AdditionalPipes;
 import net.minecraft.src.buildcraft.additionalpipes.util.CoordPair;
 import net.minecraft.src.buildcraft.additionalpipes.util.SaveManager;
 import net.minecraft.src.forge.IChunkLoadHandler;
@@ -21,7 +22,10 @@ public class ChunkLoadingHandler implements IChunkLoadHandler, ISaveEventHandler
 	private static ChunkStore chunkStore;
 
 	private void log(String s) {
-		System.out.println(s);
+		
+		if (mod_AdditionalPipes.logLevel > 0) {
+			System.out.println(s);
+		}
 	}
 	
 	@Override
@@ -40,10 +44,10 @@ public class ChunkLoadingHandler implements IChunkLoadHandler, ISaveEventHandler
 				
 				if (!chunkList.contains(chunkCoords)) {
 					chunkList.add(chunkCoords);
-					//log("Adding chunk: " + chunkCoords);
+					log("Adding chunk: " + chunkCoords);
 				}
 				else {
-					//log(chunkCoords + " already there.");
+					log(chunkCoords + " already there.");
 				}
 			}
 		}
@@ -62,13 +66,13 @@ public class ChunkLoadingHandler implements IChunkLoadHandler, ISaveEventHandler
 			for (CoordPair chunkCoordPair : loadArea) {
 
 				if (chunk.getChunkCoordIntPair().equals(chunkCoordPair.getChunkCoordIntPair())) {
-					//log("Keeping chunk: " + chunk.getChunkCoordIntPair());
+					log("Keeping chunk: " + chunk.getChunkCoordIntPair());
 					return false;
 				}
 			}
 		}
 
-		//log("Unloading chunk: " + chunk.getChunkCoordIntPair());
+		log("Unloading chunk: " + chunk.getChunkCoordIntPair());
 		return true;
 	}
 
@@ -87,6 +91,8 @@ public class ChunkLoadingHandler implements IChunkLoadHandler, ISaveEventHandler
 		if (chunkStore == null) {
 			chunkStore = (ChunkStore) SaveManager.getManager().load("chunkstore", new ChunkStore());
 		}
+		
+		System.out.println("Force loading " + chunkStore.size() + " chunks.");
 	}
 
 	@Override

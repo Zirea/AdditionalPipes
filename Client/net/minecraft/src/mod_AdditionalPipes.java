@@ -128,7 +128,7 @@ public class mod_AdditionalPipes extends NetworkMod {
 	public static final int LOG_ERROR = 1;
 	public static final int LOG_WARNING = 2;
 	public static final int LOG_INFO = 3;
-	public int logLevel;
+	public static int logLevel;
 
 	public static Minecraft mc = ModLoader.getMinecraftInstance();
 	public KeyBinding laserKeyBinding = new KeyBinding("laserKeyBinding", 67);
@@ -258,7 +258,7 @@ public class mod_AdditionalPipes extends NetworkMod {
 		// Double.parseDouble(config.getOrCreateProperty("powerloss",
 		// Configuration.CATEGORY_GENERAL,
 		// Double.toString(PowerLossCfg)).value);
-		logLevel = Integer.parseInt(config.getOrCreateProperty("logLevel", Configuration.CATEGORY_GENERAL, "1").value);
+		logLevel = Integer.parseInt(config.getOrCreateProperty("logLevel", Configuration.CATEGORY_GENERAL, "0").value);
 		config.save();
 
 		// System.out.println("Teleport Pipes Power Loss Configuration: " +

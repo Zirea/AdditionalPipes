@@ -1,6 +1,8 @@
 package net.minecraft.src.buildcraft.additionalpipes.gui;
 
-import net.minecraft.src.*;
+import net.minecraft.src.EntityPlayer;
+import net.minecraft.src.GuiButton;
+import net.minecraft.src.GuiScreen;
 import net.minecraft.src.buildcraft.additionalpipes.gui.components.GuiBetterTextField;
 import net.minecraft.src.buildcraft.additionalpipes.gui.components.GuiButtonShorter;
 import net.minecraft.src.buildcraft.additionalpipes.gui.components.GuiNameSlot;
@@ -27,8 +29,8 @@ public class GuiTeleportPipeNew extends GuiScreen implements IGuiIndirectButtons
 	private GuiButton selectNameButton;
 	private GuiButton canReceiveButton;
 
-	private PipeTeleport pipe;
-	private EntityPlayer player;
+	private final PipeTeleport pipe;
+	private final EntityPlayer player;
 	private int selectedFreq;
 	private FrequencyMap frequencyMap;
 
@@ -209,6 +211,10 @@ public class GuiTeleportPipeNew extends GuiScreen implements IGuiIndirectButtons
 	}
 
 	private void pressSetFreqButton() {
+		
+		if (textboxFreq.getText() == null || textboxFreq.getText().isEmpty()) {
+			return;
+		}
 		
 		selectedFreq = Integer.parseInt(textboxFreq.getText());
 		setNewFreq();

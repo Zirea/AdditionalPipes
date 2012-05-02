@@ -30,13 +30,19 @@ public class BidiMap<K, V> implements Map<K, V>, Serializable, Cloneable {
 	public synchronized V remove(Object key) {
 
 		V removedValue = keyToValueMap.remove(key);
+		
+		if (removedValue == null) return null;
+		
 		valueToKeyMap.remove(removedValue);
 		return removedValue;
 	}
 
-	public synchronized K removeByValue(V value) {
-
+	public synchronized K removeByValue(Object value) {
+		
 		K removedKey = valueToKeyMap.remove(value);
+		
+		if (removedKey == null) return null;
+		
 		keyToValueMap.remove(removedKey);
 		return removedKey;
 	}

@@ -106,4 +106,15 @@ public class ChunkStore implements Serializable {
 		return false;
 	}
 
+
+	public int size() {
+
+		int size = 0;
+		for (ArrayList list : chunkStore.values()) {
+			size += list.size();
+		}
+		
+		return size;
+	}
+
 }

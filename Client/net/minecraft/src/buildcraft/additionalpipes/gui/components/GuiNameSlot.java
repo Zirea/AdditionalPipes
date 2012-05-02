@@ -49,7 +49,7 @@ public class GuiNameSlot extends GuiScrollSlot {
 
 		super.drawOverlay();
 		drawRect(x, y - 7, x + width, y - 1, 0xFFC6C6C6);// top box blend
-		drawRect(x, y + height + 1, x + width, y + height + 6, 0xFFC6C6C6);// bottom
+		drawRect(x, y + height + 1, x + width, y + height + 7, 0xFFC6C6C6);// bottom
 																			// box
 																			// blend
 	}
