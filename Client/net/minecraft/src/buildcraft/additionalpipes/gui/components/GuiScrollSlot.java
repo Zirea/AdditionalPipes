@@ -1,8 +1,9 @@
 package net.minecraft.src.buildcraft.additionalpipes.gui.components;
 
-import org.lwjgl.input.Keyboard;
+import net.minecraft.src.Gui;
+import net.minecraft.src.GuiButton;
 
-import net.minecraft.src.*;
+import org.lwjgl.input.Keyboard;
 
 public abstract class GuiScrollSlot extends Gui
 {

@@ -13,6 +13,10 @@ import java.util.List;
 
 import net.minecraft.src.TileEntity;
 import net.minecraft.src.mod_AdditionalPipes;
+import net.minecraft.src.buildcraft.additionalpipes.logic.PipeLogicTeleport;
+import net.minecraft.src.buildcraft.additionalpipes.network.NetworkID;
+import net.minecraft.src.buildcraft.additionalpipes.util.FrequencyMap;
+import net.minecraft.src.buildcraft.additionalpipes.util.SaveManager;
 import net.minecraft.src.buildcraft.api.ILiquidContainer;
 import net.minecraft.src.buildcraft.api.IPipeEntry;
 import net.minecraft.src.buildcraft.api.Orientations;
@@ -20,10 +24,7 @@ import net.minecraft.src.buildcraft.api.Position;
 import net.minecraft.src.buildcraft.core.Utils;
 import net.minecraft.src.buildcraft.transport.IPipeTransportLiquidsHook;
 import net.minecraft.src.buildcraft.transport.PipeTransportLiquids;
-import net.minecraft.src.buildcraft.additionalpipes.logic.PipeLogicTeleport;
-import net.minecraft.src.buildcraft.additionalpipes.network.NetworkID;
-import net.minecraft.src.buildcraft.additionalpipes.util.FrequencyMap;
-import net.minecraft.src.buildcraft.additionalpipes.util.SaveManager;
+import net.minecraft.src.buildcraft.transport.TileGenericPipe;
 
 public class PipeLiquidsTeleport extends PipeTeleport implements IPipeTransportLiquidsHook {
 
@@ -93,12 +94,15 @@ public class PipeLiquidsTeleport extends PipeTeleport implements IPipeTransportL
 		LinkedList<OilReturn> result = new LinkedList<OilReturn>();
 
 		for (int o = 0; o <= 5; ++o) {
+			
 			Position newPos = new Position(pos);
 			newPos.orientation = Orientations.values()[o];
 			newPos.moveForwards(1.0);
 
-			if (canReceiveLiquid2(newPos)) {
-				result.add(new OilReturn(Orientations.values()[o], (ILiquidContainer) Utils.getTile(worldObj, newPos, Orientations.Unknown)));
+			TileEntity tile = Utils.getTile(worldObj, newPos, Orientations.Unknown);
+			
+			if (tile instanceof TileGenericPipe && !(((TileGenericPipe)tile).pipe instanceof PipeTeleport) && canReceiveLiquid2(newPos)) {
+				result.add(new OilReturn(Orientations.values()[o], (ILiquidContainer) tile));
 			}
 		}
 
